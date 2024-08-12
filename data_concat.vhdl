@@ -19,9 +19,9 @@ use IEEE.std_logic_unsigned.all;
 
 entity data_concat is
     port (
-       data_in : in STD_LOGIC_VECTOR(24 downto 0);     -- Data coming in from FIFO
-       timestamp : in STD_LOGIC_VECTOR(31 downto 0);   -- Timestamp of current batch, frozen at first event
-       data_to_pc : out STD_LOGIC_VECTOR(63 downto 0)  -- Output that is fed to PC
+       data_in : in STD_LOGIC_VECTOR(24 downto 0);       -- Data coming in from FIFO
+       timestamp : in STD_LOGIC_VECTOR(31 downto 0);     -- Timestamp of current batch, frozen at first event
+       data_to_fifo : out STD_LOGIC_VECTOR(63 downto 0)  -- Output that is fed to PC
     );
     end data_concat;
                 
@@ -31,6 +31,6 @@ begin
 	 -- 63 downto 32: timestamp
 	 -- 31 downto 25: default zero
 	 -- 24 downto 0: data_in
-    data_to_pc <= timestamp & "0000000" & data_in;
+    data_to_fifo <= timestamp & "0000000" & data_in;
 end rtl;
             
