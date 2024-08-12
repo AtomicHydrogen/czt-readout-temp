@@ -22,8 +22,8 @@ use IEEE.std_logic_unsigned.all;
 entity clock_counter is
     port (
        clock : in STD_LOGIC;                          -- Universal clock
-       reset : in STD_LOGIC;	                        -- Async reset  
-		 trigger : in STD_LOGIC;	                     -- Control signal from detector interface when new batch starts, freezes counter 
+       reset : in STD_LOGIC;	                      -- Async reset  
+       trigger : in STD_LOGIC;	                      -- Control signal from detector interface when new batch starts, freezes counter 
        counter : out STD_LOGIC_VECTOR(31 downto 0);   -- Output, stores the timestamp of the current batch
        overflow : out STD_LOGIC := '0'                -- If counter overflows
     );
