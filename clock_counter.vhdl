@@ -8,7 +8,7 @@
 -- Dependencies:
 --    NA. Takes clock input
 -- Revision:
---    <Code_revision_information, with revision date, content and name>
+--    13/08: Added generic var for timestamp_size
 -- Additional Comments:
 --    We need to confirm that we should actually freeze the timestamp at a point
 --		Check if overflow required
@@ -20,18 +20,21 @@ use IEEE.numeric_std.all;
 use IEEE.std_logic_unsigned.all;
 
 entity clock_counter is
+    generic(
+		  timestamp_size : integer := 32
+    );
     port (
-       clock : in STD_LOGIC;                          -- Universal clock
-       reset : in STD_LOGIC;	                      -- Async reset  
-       trigger : in STD_LOGIC;	                      -- Control signal from detector interface when new batch starts, freezes counter 
-       counter : out STD_LOGIC_VECTOR(31 downto 0);   -- Output, stores the timestamp of the current batch
-       overflow : out STD_LOGIC := '0'                -- If counter overflows
+       clock : in STD_LOGIC;                                            -- Universal clock
+       reset : in STD_LOGIC;	                                        -- Async reset  
+	   trigger : in STD_LOGIC;	                                        -- Control signal from detector interface when new batch starts, freezes counter, active low 
+       counter : out STD_LOGIC_VECTOR(timestamp_size - 1 downto 0);     -- Output, stores the timestamp of the current batch
+       overflow : out STD_LOGIC := '0'                                  -- If counter overflows
     );
     end clock_counter;
                 
 architecture rtl of clock_counter is
-	signal counter_curr : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');   -- Stores the constantly incrementing value
-	signal counter_temp : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');   -- Same as counter output, defined for VHDL declaration reasons
+	signal counter_curr : STD_LOGIC_VECTOR(timestamp_size - 1 downto 0) := (others => '0');   -- Stores the constantly incrementing value
+	signal counter_temp : STD_LOGIC_VECTOR(timestamp_size - 1 downto 0) := (others => '0');   -- Same as counter output, defined for VHDL declaration reasons
 begin
     process (clock,reset)
     begin  
@@ -40,7 +43,7 @@ begin
        if reset = '1' then 
           counter_curr <= (others => '0');  
 			 
-		 -- Positive edge clock
+		 -- Negative edge clock
        elsif (clock'event and clock = '0') then
 		 
 			 -- Checks for overflow. If overflow unnecessary, remove declaration and next 3 lines
