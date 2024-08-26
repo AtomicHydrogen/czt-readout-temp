@@ -39,9 +39,10 @@ begin
     process (clock,reset)
     begin  
 	 
-		 -- Asynchronous reset, sets counter_curr to zero
+		 -- Asynchronous reset, sets counter_curr and overflow to zero
        if reset = '1' then 
           counter_curr <= (others => '0');  
+	  overflow <= '0';
 			 
 		 -- Negative edge clock
        elsif (clock'event and clock = '0') then
