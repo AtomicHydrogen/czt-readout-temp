@@ -42,8 +42,8 @@ entity czt_spi_controller is
         clk        : in  STD_LOGIC;                      -- Clock input: 100 MHz
         reset      : in  STD_LOGIC;                      -- Reset input
         wdog_hang  : in  STD_LOGIC;                      -- Highest Level Watchdog input to detect sensor hangs
-        cmd        : in  STD_LOGIC_VECTOR(CMD_WIDTH -1 downto 0);   -- Input Command
-        cmd_data   : in  STD_LOGIC_VECTOR(DAT_WIDTH -1 downto 0);   -- Data (if) associated with command
+        cmd        : in  STD_LOGIC_VECTOR(CMD_WIDTH - 2 downto 0);   -- Input Command
+        cmd_data   : in  STD_LOGIC_VECTOR(DAT_WIDTH - 2 downto 0);   -- Data (if) associated with command
         cmd_hp     : in  STD_LOGIC;                      -- Command High Priority?
         cmd_ready  : in  STD_LOGIC;                      -- Is there Command Queued
         cmd_type   : in  STD_LOGIC_VECTOR(1 downto 0);   -- Queued Command Type 00 - No Read/No Write, 01 - No Read/Write, 10 - Read/No Write, 11 - Reserved
@@ -77,7 +77,8 @@ architecture rtl of czt_spi_controller is
     --110 :    FORCE EVRM ON
     --111 :   FORCE EVRM OFF
 
-    --Signal Declarations 
+    --Signal Declarations
+    
     signal present_substate : c_state := start; -- Current Controller Lowest Level State under a given process
 
     signal des_sh_reg     : STD_LOGIC_VECTOR (DES_WIDTH - 1 downto 0) := (others => '0');  -- Deserialiser Shift Register
@@ -96,6 +97,7 @@ architecture rtl of czt_spi_controller is
     signal cmd_type_reg   : STD_LOGIC_VECTOR (1 downto 0);              -- Command Type Holding Register
 
     signal wdog_warning   : STD_LOGIC := '0'; -- Active High if detector hang watchdog ever gets triggered
+	 signal clr_warning    : STD_LOGIC := '0'; -- If WDOG WARNING has been dealth with
 
     signal clk_cnt        : UNSIGNED (4 downto 0) := to_unsigned(0, 5); -- CLK Divider
 
@@ -118,7 +120,6 @@ architecture rtl of czt_spi_controller is
     end function xor_reduce;
 
 begin
-
     spi_main: process (clk, reset)
     begin
         if reset = '1' then                      -- Determine all signals at reset
@@ -151,8 +152,8 @@ begin
                     if cmd_hp = '1' then
                         if evrm_status = '0' then -- HP COMMAND AND NOT IN EVRM, LOAD COMMAND
                             present_substate <= busy_check;
-                            ser_cmd_reg  <= cmd(23 downto 16) & xor_reduce(cmd(23 downto 16));
-                            ser_data_reg <= cmd(15 downto  0) & xor_reduce(cmd(15 downto  0));
+                            ser_cmd_reg  <= cmd & xor_reduce(cmd);
+                            ser_data_reg <= cmd_data & xor_reduce(cmd_data);
                             cmd_type_reg <= cmd_type;
                             curr_proc <= "001";
                         else 
@@ -176,8 +177,8 @@ begin
                             evrm_status <= '1';
                         else -- COMMAND OF NORMAL PRIORITY AND NOT IN EVRM, LOAD COMMAND
                             present_substate <= busy_check;
-                            ser_cmd_reg  <= cmd(23 downto 16) & xor_reduce(cmd(23 downto 16));
-                            ser_data_reg <= cmd(15 downto  0) & xor_reduce(cmd(15 downto  0));
+                            ser_cmd_reg  <= cmd & xor_reduce(cmd);
+                            ser_data_reg <= cmd_data & xor_reduce(cmd_data);
                             cmd_type_reg <= cmd_type;
                             curr_proc <= "001";
                         end if;
@@ -216,13 +217,13 @@ begin
                             end if;
                         else 
                             if wdog_warning = '1' then -- Something is wrong with the detector, reset it with Force Break
-                                wdog_warning <= '0';
                                 present_substate <= busy_check;
                                 ser_cmd_reg  <= "00000010" & xor_reduce("00000010"); -- 02H
                                 ser_data_reg <= (others => '0');
                                 cmd_type_reg <= "00";
                                 curr_proc <= "101";
                                 evrm_status <= '0';
+				clr_warning <= '1';
                             else 
                                 present_substate <= exist_check; -- Otherwise retry
                             end if;
@@ -236,12 +237,12 @@ begin
                         if des_count = to_unsigned(DES_WIDTH, 5) and curr_proc = "100" then -- If we expect a Data Read
                             present_substate <= rx_end;
                             data_out_v <= '1';
-                            data_out   <= curr_proc & ('1' & (ser_cmd_reg &(des_sh_reg &("000")))); -- Event Readout
+                            data_out   <= curr_proc & ('1' &(des_sh_reg &"000")); -- Event Readout
                         elsif des_count = to_unsigned(DAT_WIDTH, 5) and curr_proc = "010" then -- If we expect an Event Read
                             fifo_deq <= '1';
                             present_substate <= rx_end;
                             data_out_v <= '1';
-                            data_out   <= curr_proc & ('1' & (ser_cmd_reg &(des_sh_reg &("000")))); -- Data Readout
+                            data_out   <= curr_proc & ('1' & (ser_cmd_reg(CMD_WIDTH -1 downto 1) &(des_sh_reg(24 downto 8) &("000")))); -- Data Readout
                         else present_substate <= rx;
                         end if;
                     else
@@ -258,6 +259,7 @@ begin
                         present_substate <= rx_end;
                     end if;
                 when busy_check =>
+						  clr_warning <= '0';
                     if spi_clk_rise = '1' then
                         slsel <= '0'; -- Push SS LOW on SPI_CLK rising edges only
                         present_substate <= tx_init;
@@ -273,13 +275,13 @@ begin
                     if spi_clk_rise = '1' then
                         slsel <= '1';
                         if wdog_warning = '1' then -- DETECTOR IS STUCK, FORCE CLEAR
-                            wdog_warning <= '0';
                             present_substate <= busy_check;
                             ser_cmd_reg  <= "00000010" & xor_reduce("00000010"); -- 02H
                             ser_data_reg <= (others => '0');
                             cmd_type_reg <= "00";
                             curr_proc <= "101";
                             evrm_status <= '0';
+			    clr_warning <= '1';
                         else
                             present_substate <= busy_check;
                         end if;
@@ -292,7 +294,7 @@ begin
                     if spi_clk_fall = '1' then
                         if miso = '0' then 
                             if curr_proc = "001" then
-                                ser_queue <= ser_cmd_reg; -- Load CMD
+                                ser_queue <= ser_cmd_reg & "00000000"; -- Load CMD
                             else 
                                 ser_queue <= ser_data_reg; -- Load Data
                             end if;
@@ -313,7 +315,7 @@ begin
                     elsif ser_count = to_unsigned(CMD_WIDTH, 5) and (curr_proc ="001" or curr_proc = "101" or curr_proc = "110" or curr_proc = "111") then -- For CMD Cycle
                         present_substate <= tx_end;
                         data_out_v <= '1';
-                        data_out   <= curr_proc & ('0' & (ser_cmd_reg (CMD_WIDTH-1 downto 1) & (ser_data_reg (SER_WIDTH -1 downto 0) & (ser_cmd_reg(0)&("000")))));
+                        data_out   <= curr_proc & ('0' & (ser_cmd_reg (CMD_WIDTH-1 downto 1) & (ser_data_reg (SER_WIDTH -1 downto 1) & (ser_cmd_reg(0)&("000")))));
                     else 
                         present_substate <= tx;
                     end if;
@@ -324,10 +326,10 @@ begin
                         mosi  <= '1';
                         slsel <= '1';
                         if curr_proc = "001" then
-                            if cmd_type = "10" then
+                            if cmd_type_reg = "10" then
                                 present_substate <= exist_check;
                                 curr_proc <= "010";
-                            elsif cmd_type = "01" then
+                            elsif cmd_type_reg = "01" then
                                 present_substate <= busy_check;
                                 curr_proc <= "011";
                             else 
@@ -388,7 +390,7 @@ begin
                         des_count <= (others => '0');
                         des_sh_reg <= (others => '0');
                     else 
-                        des_sh_reg(25 downto 1) <= des_sh_reg(24 downto 0); -- Shift
+                        des_sh_reg(DES_WIDTH -1 downto 1) <= des_sh_reg(DES_WIDTH -2 downto 0); -- Shift
                         des_sh_reg(0)                 <= miso;              -- Clock MISO into the register
                         des_count <= des_count + to_unsigned(1, 5);
                     end if;
@@ -396,8 +398,8 @@ begin
             end if;
         end process;
 
-    load_ser <= '1' when (spi_clk_fall = '1' and miso = '0' and present_substate = tx_init);
-    ser_en   <= '1' when(load_ser = '1' or (spi_clk_rise = '1' and present_substate = tx));
+    load_ser <= '1' when (spi_clk_fall = '1' and miso = '0' and present_substate = tx_init) else '0';
+    ser_en   <= '1' when(load_ser = '1' or (spi_clk_rise = '1' and present_substate = tx))  else '0';
     ser_reg: process(clk, reset)
         begin
             if reset = '1' then
@@ -438,7 +440,10 @@ begin
         elsif falling_edge(clk) then
             if wdog_hang = '0' and wdog_warning = '0' then
                 wdog_warning <= '1';
+    	    elsif wdog_warning = '1' and clr_warning = '1' then
+		wdog_warning <= '0';
             end if;
         end if;
     end process;
+    
 end rtl;
