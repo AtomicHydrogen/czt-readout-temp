@@ -1,2 +1,1 @@
 # vile-hdl
-Stroking 
