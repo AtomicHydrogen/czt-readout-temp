@@ -1,3 +1,3 @@
--CZT SPI controller currently takes in cmd, cmd_data, etc as separate inputs, command_fifo gives them as one. Has to be split in command_fifo outputs.
--Pynq: everything
+-CZT SPI controller currently takes in cmd, cmd_data, etc as separate inputs, command_fifo gives them as one. Has to be split in command_fifo outputs. \
+-Pynq: everything \
 -Finish top level
