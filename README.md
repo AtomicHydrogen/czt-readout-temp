@@ -1,2 +1,2 @@
 # UART-Test-V1
-HDL Files Repo
+This version was tested without the detector and with a UART interface instead of SPI on the PC side. It behaved as expected, but we have not yet tested its interfacing with a detector, or the pc_spi file as a whole.
