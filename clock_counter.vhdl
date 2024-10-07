@@ -34,6 +34,7 @@ entity clock_counter is
                 
 architecture rtl of clock_counter is
 	signal counter_curr : STD_LOGIC_VECTOR(timestamp_size - 1 downto 0) := (others => '0');   -- Stores the constantly incrementing value
+	signal counter_temp : STD_LOGIC_VECTOR(timestamp_size - 1 downto 0) := (others => '0');   -- Same as counter output, defined for VHDL declaration reasons
 begin
     process (clock,reset)
     begin  
@@ -58,12 +59,13 @@ begin
 	 
 	 -- Counter stays constant except when trigger is low, where it takes value of counter_curr
 	 -- Effectively a mux connecting back on itself
-counter_p : process (clock, reset) begin
+	 counter_temp <= counter_curr when (trigger = '0') else
+				  counter_temp;
+	 counter <= counter_temp;
+    counter_p : process (clock, reset) begin
 	if trigger = '0' then
-		if reset = '1' then 
-			counter <= (others => '0');
-		elsif falling_edge(clock) then 
-			counter <= counter_curr;
+		if falling_edge(clock) then 
+			counter_temp <= counter_curr;
 		end if;
 	end if;
     end process;

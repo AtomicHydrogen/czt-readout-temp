@@ -31,7 +31,7 @@ entity top_level is
 		  alert_bits : INTEGER := 10
   );
    port(
-       clk_in   : in STD_LOGIC;
+       clock    : in STD_LOGIC;
        reset    : in STD_LOGIC;
        
        rx       : in STD_LOGIC;
@@ -45,13 +45,6 @@ entity top_level is
 end top_level;
 
 architecture rtl of top_level is
-    component clock_wizard_wrapper is
-        port (
-            clk_out : out STD_LOGIC;
-            reset : in STD_LOGIC;
-            sys_clock : in STD_LOGIC);
-    end component;
-    
     component watchdog is
         port (
             cmd_hp : in STD_LOGIC;     -- Data coming in from FIFO
@@ -170,8 +163,6 @@ end component;
 	);
 	end component;	
     
-    signal clock : STD_LOGIC;
-    
     signal counter : STD_LOGIC_VECTOR(alert_bits - 1 downto 0) := (others => '0');  -- Keeps track of no. of cycles that cmd_hp has been high
 	
 	 signal in_comm_fifo : STD_LOGIC_VECTOR (packet_size_rx -1 downto 0);
@@ -190,14 +181,8 @@ end component;
 	
 	
 	 begin
- 
-    clk_instance: clock_wizard_wrapper
-        port map (
-            sys_clock  => clk_in,           -- Onboard 12 MHz clock
-            reset   => reset,            -- Reset signal
-            clk_out => clock     -- Generated clock output
-        );
-                       
+
+                              
     data_concat_1: data_concat port map (data_in => out_czt_spi,
                                        timestamp => timestamp,
                                        data_to_pc => in_data_fifo
