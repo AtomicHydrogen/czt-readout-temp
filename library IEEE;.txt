@@ -43,16 +43,12 @@ architecture RTL of UART is
 	 signal din_rdy_sig         : std_logic;
 
     signal data_buffer          : std_logic_vector(63 downto 0);
-    signal byte_counter         : UNSIGNED (3 downto 0) := to_unsigned(0,4);
+    signal byte_counter         : integer range 0 to 8 := 0;
     signal din                  : std_logic_vector(7 downto 0);
     signal din_vld              : std_logic := '0';
-    signal dout_vld_sig         : std_logic := '0';
     signal tx_allowed_flag      : std_logic := '0';
-    signal flag                 : std_logic := '0';
 
 begin
-    
-
 
     -- UART clock divider and clock enable
     os_clk_divider_i : entity work.UART_CLK_DIV
@@ -110,7 +106,7 @@ begin
         UART_RXD     => uart_rxd_debounced,
         -- USER DATA OUTPUT INTERFACE
         DOUT         => DOUT,
-        DOUT_VLD     => dout_vld_sig,
+        DOUT_VLD     => DOUT_VLD,
         FRAME_ERROR  => FRAME_ERROR,
         PARITY_ERROR => PARITY_ERROR
     );
@@ -120,77 +116,58 @@ begin
     begin
         if falling_edge(CLK) then
             if RST = '1' then
-                byte_counter <= to_unsigned(0,4);
+                byte_counter <= 0;
                 din <= (others => '0');
                 din_vld <= '0';
                 tx_allowed_flag <= '0';
-                flag            <= '0';
             else
                 --din_vld <= '0'; -- Default value
                 
-                if din_rdy_sig = '1' and flag = '0' then
-                    flag <= '1';
-                    if byte_counter = to_unsigned(0,4) and FIFO_EMPTY = '0' then
+                if din_rdy_sig = '1' then
+                    if byte_counter = 0 and FIFO_EMPTY = '0' then
                         data_buffer <= FIFO_DATA; -- Load the 64-bit packet from FIFO
                         din         <= data_buffer(63 downto 56);
                         din_vld <= '1';
                         tx_allowed_flag <= '1';
-                        byte_counter <= to_unsigned(1,4);
-                    elsif FIFO_EMPTY = '1' and byte_counter = to_unsigned(0,4) then
-                        din_vld <= '0';
+                        byte_counter <= 1;
                     end if;
                     if tx_allowed_flag = '1' then
                         case byte_counter is
-                            when to_unsigned( 0 ,4) => 
+                            when 0 => 
                                 din_vld <= '0';
-                            when to_unsigned( 1 ,4) =>
-                                din <=  data_buffer(55 downto 48);
+                            when 1 =>
+                                din <= data_buffer(55 downto 48);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(2,4);
-                                
-                            when to_unsigned( 2 ,4) =>
-                                din <=  data_buffer(47 downto 40);
+                            when 2 =>
+                                din <= data_buffer(47 downto 40);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(3,4);
-                                
-                            when to_unsigned( 3 ,4) =>
+                            when 3 =>
                                 din <= data_buffer(39 downto 32);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(4,4);
-                                
-                            when to_unsigned( 4 ,4) =>
-                                din <=  data_buffer(31 downto 24);
+                            when 4 =>
+                                din <= data_buffer(31 downto 24);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(5,4);
-                                
-                            when to_unsigned( 5 ,4) =>
-                                din <=  data_buffer(23 downto 16);
+                            when 5 =>
+                                din <= data_buffer(23 downto 16);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(6,4);
-                                
-                            when to_unsigned( 6 ,4) =>
-                                din <=  data_buffer(15 downto 8);
+                            when 6 =>
+                                din <= data_buffer(15 downto 8);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(7,4);
-                                
-                            when to_unsigned( 7 ,4) =>
-                                din <=  data_buffer(7 downto 0);
+                            when 7 =>
+                                din <= data_buffer(7 downto 0);
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(8,4);
-                                
-                            when to_unsigned( 8 ,4) =>
-                                din <=  STOP_BYTE; -- Send the stop byte
+                            when 8 =>
+                                din <= STOP_BYTE; -- Send the stop byte
                                 din_vld <= '1';
-                                byte_counter <= to_unsigned(0,4); -- Reset counter after sending the stop byte
-                                tx_allowed_flag <= '0';
-                                
-                            when others => 
-                                din_vld <= '0';
                         end case;
-
+                        
+                        if byte_counter = 8 then
+                            byte_counter <= 0; -- Reset counter after sending the stop byte
+                            tx_allowed_flag <= '0';
+                        else
+                            byte_counter <= byte_counter + 1;
+                        end if;
                     end if;
-                elsif din_rdy_sig = '0' and flag = '1' then
-                    flag <= '0';
                 end if;
             end if;
         end if;
@@ -215,7 +192,6 @@ begin
     );
 	 
 	 DIN_RDY <= din_rdy_sig;
-     DOUT_VLD <= dout_vld_sig;
 
 end architecture;
 

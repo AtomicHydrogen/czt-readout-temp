@@ -35,6 +35,7 @@ architecture rtl of data_concat is
 begin
 	 -- packet_length - 1 downto 32: timestamp
 	 -- 31 downto 0: data_in (as of now top 7 bits are zero)
-    data_to_pc <= timestamp & data_in;
+    data_to_pc(63 downto 32) <= (others => '0');--timestamp & data_in;
+    data_to_pc(31 downto 0)  <= data_in;
 end rtl;
             

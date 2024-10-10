@@ -100,7 +100,7 @@ begin
 	begin
 		-- Condition for empty fifo
 		if (tail = head) then
-			fifo_empty <= '1';
+			fifo_empty <= '1'; 
 			full_temp <= '0';
 		-- Condition for neither empty nor full
 		elsif (not (head = tail - 1 or (tail = 0 and head = fifo_size - 1))) then

@@ -16,7 +16,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.std_logic_unsigned.all;
 
-entity top_level is
+entity top_level_tb is
     generic(
         packet_size_tx : INTEGER := 64;
         packet_size_rx : INTEGER := 32;
@@ -31,8 +31,8 @@ entity top_level is
 		  alert_bits : INTEGER := 10
   );
    port(
-       clk_in   : in STD_LOGIC;
-       reset    : in STD_LOGIC;
+       
+       
        
        rx       : in STD_LOGIC;
        miso_czt : in STD_LOGIC;
@@ -40,18 +40,11 @@ entity top_level is
        sclk_czt : out STD_LOGIC;
        mosi_czt : out STD_LOGIC;
        ss_czt   : out STD_LOGIC;
-       tx  : out STD_LOGIC;
-       valid_test : out STD_LOGIC
+       tx  : out STD_LOGIC
    );
-end top_level;
+end top_level_tb;
 
-architecture rtl of top_level is
-    component clock_wizard_wrapper is
-        port (
-            clk_out : out STD_LOGIC;
-            reset : in STD_LOGIC;
-            sys_clock : in STD_LOGIC);
-    end component;
+architecture rtl of top_level_tb is
     
     component watchdog is
         port (
@@ -171,7 +164,7 @@ end component;
 	);
 	end component;	
     
-    signal clock : STD_LOGIC;
+    signal clock, reset : STD_LOGIC;
     
     signal counter : STD_LOGIC_VECTOR(alert_bits - 1 downto 0) := (others => '0');  -- Keeps track of no. of cycles that cmd_hp has been high
 	
@@ -185,8 +178,6 @@ end component;
 	 signal timestamp   : STD_LOGIC_VECTOR (timestamp_size - 1 downto 0);
 	 signal in_data_fifo, out_data_fifo : STD_LOGIC_VECTOR (packet_size_tx - 1 downto 0);
 	 signal timestamp_trig, overflow : STD_LOGIC;
-     signal fake_valid, helper_signal : STD_LOGIC;
-     signal garbage_bits : STD_LOGIC_VECTOR (63 downto 0) := (others => '0');
 
 	
 		
@@ -194,12 +185,7 @@ end component;
 	
 	 begin
  
-    clk_instance: clock_wizard_wrapper
-        port map (
-            sys_clock  => clk_in,           -- Onboard 12 MHz clock
-            reset   => reset,            -- Reset signal
-            clk_out => clock     -- Generated clock output
-        );
+  
                        
     data_concat_1: data_concat port map (data_in => out_czt_spi,
                                        timestamp => timestamp,
@@ -207,9 +193,9 @@ end component;
                                       );
     
     data_fifo_1: fifo port map (clock => clock,
-                                     data_in => garbage_bits,--in_data_fifo,
+                                     data_in => in_data_fifo,
                                      clear => rst_data_fifo,
-                                     wr_en => wr_en_comm_fifo,--wr_en_data_fifo,
+                                     wr_en => wr_en_data_fifo,
                                      rd_en => rd_en_data_fifo,
                                      data_out => out_data_fifo,
                                      fifo_full => full_data_fifo,
@@ -231,7 +217,7 @@ end component;
 														  din_v => uart_rx_v,
 														  din => uart_rx_data,
 														  dout => in_comm_fifo,
-														  dout_v => fake_valid);
+														  dout_v => wr_en_comm_fifo);
 														  
 														  
 														  
@@ -282,18 +268,12 @@ end component;
 	rst_comm_fifo <= reset;
 	rst_czt_spi   <= reset;
 	rst_clock_counter <= reset;
-    flag_p : process (clock, reset) begin
-        if reset = '1' then
-           wr_en_comm_fifo <= '0';
-           helper_signal <= '0';
-        elsif falling_edge(clock) then
-            if uart_rx_v = '1'  then
-               helper_signal <= '1';
-            end if;
-        end if;
+    reset <= '1', '0' after 10 ns;
+    clk_p: process begin
+        clock <= '1';
+        wait for 5 ns;
+        clock <= '0';
+        wait for 5 ns;
     end process;
-    garbage_bits <= (others => '0') when helper_signal = '0' else (others => '1');
-    valid_test <= helper_signal;
-
-
-    end rtl;
+	
+end rtl;

@@ -112,7 +112,7 @@ architecture rtl of czt_spi_controller is
     signal spi_clk_rise   : STD_LOGIC := '0'; -- Determine SCLK rising edges - written for a falling edge trig'd main circuit
     signal spi_clk_fall   : STD_LOGIC := '0'; -- Determine SCLK falling edges - also written for a falling edge trig'd main circuit
 
-    signal evrm_status    : STD_LOGIC := '0'; -- Sensor EVRM state according to the SPI Controller (1 for ON, 0 for OFF)
+    signal evrm_status    : STD_LOGIC := '1'; -- Sensor EVRM state according to the SPI Controller (1 for ON, 0 for OFF)
 
     constant clk_ratio    : INTEGER range 5 to 25  := 5; -- SCLK RATIO: CURRENTLY 5 => 10 MHz SPI
                                                           -- clk_ratio = f_board/(2 x f_spi)
@@ -140,7 +140,7 @@ begin
             trig             <= '1';
             data_out_v       <= '0';
             data_out         <= (others => '0');
-				evrm_status 	  <= '0';
+			evrm_status 	 <= '1';
 				
 
         elsif falling_edge(clk) then
@@ -208,7 +208,7 @@ begin
                             present_substate <= rx;
                             if curr_proc = "000" then
                                 curr_proc <= "100"; -- Move from Idle to Event Readout mode
-										  trig <= '0';
+								trig <= '0';
                             end if;
                         else 
                             present_substate <= exist_check_fail; -- Deal with failure :'(
@@ -247,13 +247,13 @@ begin
                     end if;
                         
                 when rx =>
-						  trig <= '1';
+					trig <= '1';
                     if spi_clk_fall = '1' then
-                        if des_count = to_unsigned(DES_WIDTH, 5) and curr_proc = "100" then -- If we expect a Data Read
+                        if des_count = to_unsigned(DES_WIDTH, 5) and curr_proc = "100" then -- If we expect an Event Read
                             present_substate <= rx_end;
                             data_out_v <= '1';
                             data_out   <= curr_proc & ('1' &(des_sh_reg &"000")); -- Event Readout
-                        elsif des_count = to_unsigned(DAT_WIDTH, 5) and curr_proc = "010" then -- If we expect an Event Read
+                        elsif des_count = to_unsigned(DAT_WIDTH, 5) and curr_proc = "010" then -- If we expect a Data Read
                             fifo_deq <= '1';
                             present_substate <= rx_end;
                             data_out_v <= '1';
