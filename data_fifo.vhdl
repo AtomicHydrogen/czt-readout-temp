@@ -115,11 +115,15 @@ begin
 	fifo_full <= full_temp;
 	fifo_empty <= empty_temp;
 
+	-- To send a signal back if the FIFO is filling up
+	-- Ensures we can stop sending commands and prevent the FIFO from overflowing
 	process (clear, head, tail)
 		begin
+			-- Reset on clear	
 			 if clear = '1' then
 				  occupancy <= (others => '0');
 			 else
+				 -- occupancy stores the number of registers currently occupied
 				  if head >= tail then
 						occupancy <= head - tail;
 				  else
@@ -127,7 +131,7 @@ begin
 				  end if;
 			 end if;
 		end process;
-		
+		-- fifo_75_full is high when the FIFO is more than 75% full
 		fifo_75_full <= '1' when to_integer(occupancy) >= (fifo_size * 3 / 4) else '0';
 	
 end rtl;
