@@ -151,20 +151,26 @@ begin
 		high_p <= high_p_var;
 	end process;
 
+    -- Ensures czt-spi-controller isn't stuck i.e. it reads from the FIFO regularly
     process(clock, rd_en, clear)
-		 variable counter : INTEGER := 0;
+		 variable counter : INTEGER := 0; -- Keeps track of clock cycles passed
 		 begin
+			 -- Resets
 			if clear = '1' then
 				counter := 0;
 				watchdog_timer <= 0;
 			elsif falling_edge(clock) then
+				-- While the FIFO isn't read out, keeps incrementing counter
 				  if (rd_en = '0' and empty_temp = '0') then
 						counter := counter + 1;
+
+				  -- If it is read from, resets
 				  else
 						counter := 0;
 				  end if;
 
 				  if (watchdog_timer = limit) then
+					  	-- Pulls watchdog_full up until it's read from again
 						if (not(rd_en = '1')) then
 							 watchdog_full <= '1';
 							 counter := 0;
@@ -172,6 +178,7 @@ begin
 							 watchdog_full <= '0';
 						end if;
 				  end if;
+			-- Legacy signal, not strictly necessary now
 			 watchdog_timer <= counter;
 			end if;
     end process;
