@@ -33,7 +33,7 @@ entity spi_slave is
        data_in    : in  STD_LOGIC_VECTOR(31 downto 0);
        data_out   : out STD_LOGIC_VECTOR(31 downto 0);
 	   data_out_v : out STD_LOGIC;
-       tx_ready_out   : out STD_LOGIC
+       data_in_ready   : out STD_LOGIC
     );
     end spi_slave;
 
@@ -53,10 +53,10 @@ architecture rtl of spi_slave is
     signal curr_rx_state : rx_state := idle;
     signal curr_tx_state : tx_state := idle;
     signal ser_rdy, deser_rdy, tx_ready : STD_LOGIC := '0';
-    signal mosi_sync, ss_sync, sclk_sync : STD_LOGIC;
+    signal mosi_sync, ss_sync, sclk_sync, mosi_sync_1, sclk_sync_1, ss_sync_1 : STD_LOGIC;
     signal sclk_prev, ss_prev     : STD_LOGIC := '1';  -- Previous state of synchronized SCLK
     signal sclk_falling_edge, sclk_rising_edge, ss_falling_edge, ss_rising_edge : STD_LOGIC := '0';
-	 signal miso_enable : STD_LOGIC := 'Z'; 
+	signal miso_enable : STD_LOGIC := 'Z'; 
 	begin
 
     rx_proc: process (clk, reset) begin
@@ -82,6 +82,8 @@ architecture rtl of spi_slave is
                     rx_count <= rx_count + to_unsigned(1, rx_count_width);
                     if rx_count = to_unsigned(packet_size - 1, rx_count_width) then
                         curr_rx_state <= rx_end;
+                    elsif ss_rising_edge = '1' then
+                        curr_rx_state <= idle;
                     end if;
                 end if;
             elsif curr_rx_state = rx_end then
@@ -124,11 +126,11 @@ architecture rtl of spi_slave is
                 if (ss_falling_edge = '1') then
                     curr_tx_state <= tx;
                     tx_count      <= to_unsigned(0, tx_count_width);
-						  miso_enable <= '1';
+					miso_enable <= '1';
                 else
-						  curr_tx_state <= loaded;
-						  miso_enable <= '0';
-					 end if;
+		     		curr_tx_state <= loaded;
+			    	miso_enable <= '0';
+				end if;
             elsif curr_tx_state = tx then
                 miso_enable <= '1';
                 if(sclk_rising_edge = '1') then
@@ -137,6 +139,9 @@ architecture rtl of spi_slave is
                     tx_count  <= tx_count + to_unsigned(1, tx_count_width);
                     if tx_count = to_unsigned(packet_size - 1, tx_count_width) then
                         curr_tx_state <= tx_end;
+                    elsif ss_rising_edge = '1' then
+                        curr_tx_state <= idle;
+                        tx_ready    <= '1';
                     end if;
                 end if;
             elsif curr_tx_state = tx_end then
@@ -157,7 +162,7 @@ architecture rtl of spi_slave is
     begin
         if reset = '1' then
 				-- Initial conditions
-		      sclk_prev <= '1';
+		    sclk_prev <= '1';
             ss_prev   <= '1';
             mosi_sync <= '1';
             sclk_sync <= '1';
@@ -168,9 +173,13 @@ architecture rtl of spi_slave is
             sclk_prev <= sclk_sync;
             ss_prev   <= ss_sync;
             -- Assign synchronized outputs
-            mosi_sync <= mosi;
-            sclk_sync <= sclk;
-            ss_sync   <= ss;
+            mosi_sync_1 <= mosi;
+            sclk_sync_1 <= sclk;
+            ss_sync_1   <= ss;
+            mosi_sync <= mosi_sync_1;
+            sclk_sync <= sclk_sync_1;
+            ss_sync   <= ss_sync_1;
+
 
         end if;
     end process;
@@ -180,12 +189,12 @@ architecture rtl of spi_slave is
   
 
     -- Detect edges on synchronized SCLK
-    sclk_rising_edge <= '1' when (sclk_sync = '0' and sclk = '1') else '0';
-    sclk_falling_edge <= '1' when (sclk_sync = '1' and sclk = '0') else '0';
-    ss_falling_edge <= '1' when (ss_sync = '1' and ss = '0') else '0';
-    ss_rising_edge <= '1' when (ss_sync = '0' and ss = '1') else '0';
+    sclk_rising_edge <= '1' when (sclk_prev = '0' and sclk_sync = '1') else '0';
+    sclk_falling_edge <= '1' when (sclk_prev = '1' and sclk_sync = '0') else '0';
+    ss_falling_edge <= '1' when (ss_prev = '1' and ss_sync = '0') else '0';
+    ss_rising_edge <= '1' when (ss_prev = '0' and ss_sync = '1') else '0';
 	 
-	tx_ready_out <= tx_ready;
+    data_in_ready <= tx_ready;
 
     
 end rtl;

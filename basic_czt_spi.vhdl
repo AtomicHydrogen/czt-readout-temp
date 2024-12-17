@@ -37,7 +37,9 @@ entity basic_czt_spi_controller is
         CMD_WIDTH : NATURAL := 10;    -- Detector Command Length
         DAT_WIDTH : NATURAL := 18;   -- Detector Command associated Data Length
         EVF_WIDTH : NATURAL := 24;   -- Event Frame Width
-        DET_ID    : INTEGER := 1
+        DET_ID    : INTEGER := 1;
+        clk_ratio : INTEGER range 1 to 25  := 3 -- SCLK RATIO: CURRENTLY 10 => 10 MHz SPI
+                                                          -- clk_ratio = f_board/(2 x f_spi)
     );
     port (
         clk        : in  STD_LOGIC;                      -- Clock input: 100 MHz
@@ -56,7 +58,9 @@ entity basic_czt_spi_controller is
         trig       : out STD_LOGIC;                      -- Timestamp Trigger, Active Low
         fifo_deq   : out STD_LOGIC;                      -- High when dequeueing 
         data_out_v : out STD_LOGIC;                      -- Data Out Valid
-        data_out   : out STD_LOGIC_VECTOR(OUT_WIDTH -1 downto 0)   -- Output vector, 
+        data_out   : out STD_LOGIC_VECTOR(OUT_WIDTH -1 downto 0);
+        evrm       : out STD_LOGIC
+           -- Output vector, 
 		  --ser_reg    : out STD_LOGIC_VECTOR(SER_WIDTH -1 downto 0);
    	  --lser       : out STD_LOGIC;
 	     --ser_enable : out STD_LOGIC;
@@ -80,7 +84,7 @@ architecture rtl of basic_czt_spi_controller is
     --States Enum defintion
     type c_state is (start, rx, tx, exist_check, exist_check_fail, busy_check, busy_check_fail, rx_init, tx_init, rx_end, tx_end, fifo_deque);
 
-    constant id := std_logic_vector(to_unsigned(DET_ID, 1))
+    constant id : STD_LOGIC_VECTOR(0 downto 0) := std_logic_vector (to_unsigned(DET_ID, 1));
 
     signal curr_proc : STD_LOGIC_VECTOR (2 downto 0) := "000"; -- Describes the overall state of the SPI Controller
     --CURR PROC/Frame Type:
@@ -124,8 +128,7 @@ architecture rtl of basic_czt_spi_controller is
 
     signal evrm_status    : STD_LOGIC := '0'; -- Sensor EVRM state according to the SPI Controller (1 for ON, 0 for OFF)
 
-    constant clk_ratio    : INTEGER range 5 to 25  := 5; -- SCLK RATIO: CURRENTLY 10 => 10 MHz SPI
-                                                          -- clk_ratio = f_board/(2 x f_spi)
+
 
     -- signal cmd_number     : UNSIGNED (4 downto 0) := to_unsigned(0, 5);
 
@@ -398,6 +401,7 @@ begin
 
     sclk <= spi_clk;
 	mosi <= ser_sh_reg(SER_WIDTH-1);
+    evrm <= evrm_status;
 
 	 --Testing signals
 	 --ser_reg <= ser_sh_reg;

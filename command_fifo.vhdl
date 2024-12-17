@@ -24,7 +24,7 @@ use IEEE.std_logic_unsigned.all;
 
 entity command_fifo is
     generic(
-        fifo_size : integer := 5;	   -- Size of FIFO, i.e. no. of packets that can be stored
+        fifo_size : integer := 40;	   -- Size of FIFO, i.e. no. of packets that can be stored
 		packet_in : integer := 32;	   -- Size of an individual packet, different for inbound and outbound FIFO
 		packet_out : integer := 32;	   
 		limit : integer := 100		   -- Cycles after which cmd_ready is upgraded to cmd_hp (ensures low priority commands aren't kept waiting forever)
@@ -35,7 +35,8 @@ entity command_fifo is
         command_in : in STD_LOGIC_VECTOR(packet_in - 1 downto 0);     -- Data coming in to FIFO
         clear : in STD_LOGIC;														  -- Clears FIFO and resets head and tail to beginning
         wr_en : in STD_LOGIC;														  -- Write enable, controlled by SPI_PC module
-		rd_en : in STD_LOGIC; 													  -- Read enable, controlled by SPI_Det module
+		rd_en : in STD_LOGIC; 		-- Read enable, controlled by SPI_Det module
+		fifo_full : out STD_LOGIC;											  
         cmd : out STD_LOGIC_VECTOR(7 downto 0) := (others => '0');    -- Output
 		cmd_data : out STD_LOGIC_VECTOR(15 downto 0) := (others => '0');
 		cmd_hp : out STD_LOGIC := '0';								-- Active high, when high priority command present or queue is full or low priority
@@ -51,8 +52,8 @@ architecture rtl of command_fifo is
     signal fifo_buffer : fifo_array; 
     signal head : INTEGER range 0 to fifo_size - 1 := 0;  	           -- Decides the beginning of the buffer (i.e. where to write to). Always points to an empty register
 	signal tail : INTEGER range 0 to fifo_size - 1 := 0;  		        -- Decide the  end of the buffer (i.e. where to read from) 
-	signal fifo_full : STD_LOGIC := '0';								-- Pushes cmd_hp high when high (tells SPI_Det to read as FIFO is full)
-	signal fifo_empty : STD_LOGIC := '1';                               -- Used to decide cmd_ready
+	signal full_temp : STD_LOGIC := '0';								-- Pushes cmd_hp high when high (tells SPI_Det to read as FIFO is full)
+	signal fifo_empty, empty_temp : STD_LOGIC;                               -- Used to decide cmd_ready
 	signal high_p : STD_LOGIC := '0';                                   -- High when high priority command present in queue
     signal command_temp : STD_LOGIC_VECTOR(packet_in - 1 downto 0);		-- Command in FIFO currently being read (it is split into command, type, priority, etc)
     signal watchdog_full : STD_LOGIC := '0';
@@ -62,7 +63,7 @@ begin
     cmd <= command_temp(10 downto 3);
 	cmd_data <= command_temp(26 downto 11);
     cmd_type <= command_temp(2 downto 1); 
-	cmd_id   <= command_temp(31);
+	cmd_id   <= command_temp(31 downto 31);
     process (clock,clear, head, tail)
     begin  
 	 -- High p : 0
@@ -79,7 +80,7 @@ begin
 			
 			-- If write enable is enabled
 			-- command_in is written to the register pointed to by the head
-			if (wr_en = '1' and not (fifo_full = '1')) then
+			if (wr_en = '1' and not (full_temp = '1')) then
 				fifo_buffer(head) <= command_in;
 				-- If head reaches the end, it wraps back around, else increments
 				if (head = fifo_size - 1) then
@@ -116,24 +117,27 @@ begin
 	begin
 		-- Condition for empty fifo
 		if (tail = head) then
-			fifo_empty <= '1';
-			fifo_full <= '0';
+			empty_temp <= '1'; 
+			full_temp <= '0';
 		-- Condition for neither empty nor full
 		elsif (not (head = tail - 1 or (tail = 0 and head = fifo_size - 1))) then
-			fifo_full <= '0';
-			fifo_empty <= '0';
-		-- Conditino for full
+			full_temp <= '0';
+			empty_temp <= '0';
+		-- Condition for full
 		else 
-			fifo_full <= '1';
-			fifo_empty <= '0';
+			full_temp <= '1';
+			empty_temp <= '0';
 		end if;
 	end process;
+	fifo_full <= full_temp;
+	fifo_empty <= empty_temp;
+
 
     -- Tells detector SPI to read immediately if there's a high priority command or the queue is full
-    cmd_hp <= fifo_full or high_p or watchdog_full;
+    cmd_hp <= full_temp or high_p or watchdog_full;
 
     -- Tells detector SPI commands are present in queue when FIFO is not empty
-    cmd_ready <= not fifo_empty;
+    cmd_ready <= not empty_temp;
 	
 	process(fifo_buffer) 
 	variable high_p_var: STD_LOGIC := '0';
@@ -154,7 +158,7 @@ begin
 				counter := 0;
 				watchdog_timer <= 0;
 			elsif falling_edge(clock) then
-				  if (rd_en = '0' and fifo_empty = '0') then
+				  if (rd_en = '0' and empty_temp = '0') then
 						counter := counter + 1;
 				  else
 						counter := 0;
