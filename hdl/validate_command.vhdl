@@ -14,7 +14,7 @@ architecture Behavioral of validate_command is
 
     type command_array is array (natural range <>) of std_logic_vector(7 downto 0);
 
-    constant command_valids : command_array := (
+    constant command_valids : command_array := ( -- Valid command IDs (Hard coded)
         x"E0", x"E1", x"E2", x"E3", x"E4", x"E5", x"E6", x"E7", x"E8", x"E9",
         x"9D", x"9E", x"86", x"A3", x"96", x"9A", x"02", x"85", x"05", x"8C",
         x"21", x"A1", x"1F", x"9F", x"20", x"A0", x"81", x"01", x"32", x"B2",
@@ -22,12 +22,12 @@ architecture Behavioral of validate_command is
         x"90", x"48", x"C8"
     );
 
-    constant command_has_reply : command_array := (
+    constant command_has_reply : command_array := ( -- Commands that have Data Read Cycles (Hard coded)
         x"E0", x"9D", x"9E", x"86", x"A3", x"96", x"9A", x"A1", x"9F", x"A0",
         x"B2", x"B4", x"87", x"8B", x"C8", x"84", x"CB"
     );
 
-    constant command_has_data : command_array := (
+    constant command_has_data : command_array := ( -- Commands that have Data Write Cycles (Hard coded)
         x"21", x"1F", x"20", x"32", x"07", x"0B", x"48", x"04"
     );
 
@@ -41,7 +41,7 @@ architecture Behavioral of validate_command is
         return false;
     end function;
 
-    function calculate_parity(bits : std_logic_vector(31 downto 0)) return std_logic_vector is
+    function calculate_parity(bits : std_logic_vector(31 downto 0)) return std_logic_vector is -- Bits 29 and 30 are parity bits 
         variable count : integer := 0;
         variable parity : std_logic_vector(1 downto 0);
     begin

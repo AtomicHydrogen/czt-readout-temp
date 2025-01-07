@@ -1,19 +1,21 @@
 -- Designed by: Suchet
 --
 -- Create Date: 11/10/2024
--- Component Name: SPI Slave synchronised to TX's CLK (TX: SPI Master, RX: SPI Slave). This is a bad and innacurate name.
+-- Component Name: SPI Slave synchronised to TX's CLK (TX: SPI Master, RX: SPI Slave). This is technically an innacurate name.
 -- Description:
 --    Standard SPI Slave with variable packet width. 
 --    Input needs a valid as well as ready (assumed fifo interaction). All signals are active high and will be high for exactly one cycle.
 --    Inputs and outputs are of the transaction width;
+--    This module is clocked by SCLK: It is known to suffer metastability when the clock waveform becomes distorted.
+--    If metastability occurs the outputs may be partially bit shifted and 1s may be dropped.
+--    The CDC FIFOs are for synchronisation.
 -- Dependencies:
 --    NA. Takes clock input
 -- Revision:
---    <Code_revision_information, with revision date, content and name>
+--    Revision 2.0 - 11/10/2024 - Updated with appropriate CDC
 -- Additional Comments:
 -- Designed to work with AXI Quad SPI in standard SPI Mode, with Automatic Slave Select, CPHA = 0, CPOL = 1; (Mode 1)
 -- Sample at falling edge, shift at rising edge
--- Planned redesign for configurable mode upcoming
 
 library IEEE;
 use IEEE.std_logic_1164.all;

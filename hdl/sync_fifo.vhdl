@@ -1,16 +1,11 @@
--- Designed by: Ashwajit 
+-- Designed by: Ashwajit & Suchet
 --
 -- Create Date: 5/12/2024
 -- Component Name: Synchronising FIFO
 -- Description:
 --    First In First Out buffer that is used to sync the SPI Slave interface with the rest of the circuitry
---    Between data_concat and detector interface, and between PC interface and data_concat
---    Uses a ring buffer, with the head and tail marking the beginning and end (i.e. where you read and write from)
 -- Dependencies:
---    data_concat: Takes data_in from data_concat
---    clear, clock: Top level controlling these
---    rd_en: Likely controlled by PC interface file
---    wr_en: Likely controlled by data_concat, unclear currently
+--    Heavily interconnected with COMM FIFO and tx_packetise.
 -- Revision:
 --    <Code_revision_information, with revision date, content and name>
 -- Additional Comments:
