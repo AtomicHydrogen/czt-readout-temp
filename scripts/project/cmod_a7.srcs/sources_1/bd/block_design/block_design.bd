@@ -1,0 +1,185 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0x8FF04EDEB003A87E",
+      "device": "xc7a35tcpg236-1",
+      "gen_directory": "../../../../cmod_a7.gen/sources_1/bd/block_design",
+      "name": "block_design",
+      "rev_ctrl_bd_flag": "RevCtrlBdOff",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2022.1",
+      "validated": "true"
+    },
+    "design_tree": {
+      "clk_wiz_0": "",
+      "czt_spi_core_0": ""
+    },
+    "ports": {
+      "miso_czt_0": {
+        "direction": "I"
+      },
+      "mosi_czt_0": {
+        "direction": "O"
+      },
+      "sclk_czt_0": {
+        "direction": "O"
+      },
+      "ss_czt_0": {
+        "direction": "O"
+      },
+      "miso_czt_1": {
+        "direction": "I"
+      },
+      "mosi_czt_1": {
+        "direction": "O"
+      },
+      "sclk_czt_1": {
+        "direction": "O"
+      },
+      "ss_czt_1": {
+        "direction": "O"
+      },
+      "miso_pynq": {
+        "direction": "O"
+      },
+      "mosi_pynq": {
+        "direction": "I"
+      },
+      "sclk_pynq": {
+        "direction": "I"
+      },
+      "ss_pynq": {
+        "direction": "I"
+      },
+      "clk": {
+        "direction": "I"
+      },
+      "reset": {
+        "direction": "I"
+      }
+    },
+    "components": {
+      "clk_wiz_0": {
+        "vlnv": "xilinx.com:ip:clk_wiz:6.0",
+        "xci_name": "block_design_clk_wiz_0_0",
+        "xci_path": "ip\\block_design_clk_wiz_0_0_1\\block_design_clk_wiz_0_0.xci",
+        "inst_hier_path": "clk_wiz_0",
+        "parameters": {
+          "CLKOUT1_REQUESTED_OUT_FREQ": {
+            "value": "60.0"
+          },
+          "PRIM_IN_FREQ": {
+            "value": "12.0"
+          },
+          "PRIM_SOURCE": {
+            "value": "Single_ended_clock_capable_pin"
+          }
+        }
+      },
+      "czt_spi_core_0": {
+        "vlnv": "user:user:CZT_SPI_Core:1.22",
+        "xci_name": "block_design_czt_spi_core_0_0",
+        "xci_path": "ip\\block_design_czt_spi_core_0_0_1\\block_design_czt_spi_core_0_0.xci",
+        "inst_hier_path": "czt_spi_core_0",
+        "parameters": {
+          "czt_spi_clk_ratio": {
+            "value": "3"
+          }
+        }
+      }
+    },
+    "nets": {
+      "clk_1": {
+        "ports": [
+          "clk",
+          "clk_wiz_0/clk_in1"
+        ]
+      },
+      "clk_wiz_0_clk_out1": {
+        "ports": [
+          "clk_wiz_0/clk_out1",
+          "czt_spi_core_0/sys_tick"
+        ]
+      },
+      "czt_spi_core_0_miso_pynq": {
+        "ports": [
+          "czt_spi_core_0/miso_pynq",
+          "miso_pynq"
+        ]
+      },
+      "czt_spi_core_0_mosi_czt_0": {
+        "ports": [
+          "czt_spi_core_0/mosi_czt_0",
+          "mosi_czt_0"
+        ]
+      },
+      "czt_spi_core_0_mosi_czt_1": {
+        "ports": [
+          "czt_spi_core_0/mosi_czt_1",
+          "mosi_czt_1"
+        ]
+      },
+      "czt_spi_core_0_sclk_czt_0": {
+        "ports": [
+          "czt_spi_core_0/sclk_czt_0",
+          "sclk_czt_0"
+        ]
+      },
+      "czt_spi_core_0_sclk_czt_1": {
+        "ports": [
+          "czt_spi_core_0/sclk_czt_1",
+          "sclk_czt_1"
+        ]
+      },
+      "czt_spi_core_0_ss_czt_0": {
+        "ports": [
+          "czt_spi_core_0/ss_czt_0",
+          "ss_czt_0"
+        ]
+      },
+      "czt_spi_core_0_ss_czt_1": {
+        "ports": [
+          "czt_spi_core_0/ss_czt_1",
+          "ss_czt_1"
+        ]
+      },
+      "miso_czt_0_1": {
+        "ports": [
+          "miso_czt_0",
+          "czt_spi_core_0/miso_czt_0"
+        ]
+      },
+      "miso_czt_1_1": {
+        "ports": [
+          "miso_czt_1",
+          "czt_spi_core_0/miso_czt_1"
+        ]
+      },
+      "mosi_pynq_1": {
+        "ports": [
+          "mosi_pynq",
+          "czt_spi_core_0/mosi_pynq"
+        ]
+      },
+      "reset_1": {
+        "ports": [
+          "reset",
+          "clk_wiz_0/reset",
+          "czt_spi_core_0/sys_clr"
+        ]
+      },
+      "sclk_pynq_1": {
+        "ports": [
+          "sclk_pynq",
+          "czt_spi_core_0/sclk_pynq"
+        ]
+      },
+      "ss_pynq_1": {
+        "ports": [
+          "ss_pynq",
+          "czt_spi_core_0/ss_pynq"
+        ]
+      }
+    }
+  }
+}
