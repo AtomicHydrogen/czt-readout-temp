@@ -381,7 +381,7 @@ architecture rtl of czt_spi_core_2det is
 
     comm_fifo_ready <= not(comm_fifo_full);
 
-    wr_en_comm_fifo <= valid_packet;
+    wr_en_comm_fifo <= wr_en_comm_fifo_raw; --valid_packet;
 
     
 
