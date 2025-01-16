@@ -229,25 +229,25 @@ architecture rtl of czt_spi_core_2det is
 	
 	
 	 begin   
-    data_concat_1: data_concat port map (data_in => out_czt_spi_1_parity,
+    data_concat_1: data_concat port map (data_in => out_czt_spi_1,--_parity,
                                        timestamp => timestamp,
                                        data_to_pc => in_data_fifo_1
                                       );
 
-    data_concat_0: data_concat port map (data_in => out_czt_spi_0_parity,
+    data_concat_0: data_concat port map (data_in => out_czt_spi_0,--_parity,
                                         timestamp => timestamp,
                                         data_to_pc => in_data_fifo_0
                                         );
 
-    parity_calc_1: packet_parity port map (
-        packet_in  => out_czt_spi_1(31 downto 2) & (comm_fifo_full & out_czt_spi_1(0)),
-        packet_out => out_czt_spi_1_parity
-    );
+    --parity_calc_1: packet_parity port map (
+       -- packet_in  => out_czt_spi_1(31 downto 2) & (comm_fifo_full & out_czt_spi_1(0)),
+     --   packet_out => out_czt_spi_1_parity
+    --);
 
-    parity_calc_0: packet_parity port map (
-        packet_in  => out_czt_spi_0(31 downto 2) & (comm_fifo_full & out_czt_spi_0(0)),
-        packet_out => out_czt_spi_0_parity
-    );
+    --parity_calc_0: packet_parity port map (
+      --  packet_in  => out_czt_spi_0(31 downto 2) & (comm_fifo_full & out_czt_spi_0(0)),
+        --packet_out => out_czt_spi_0_parity
+    --);
     
     data_fifo_1: fifo port map (clock => sys_tick,
                                      data_in => in_data_fifo_1, 
@@ -358,11 +358,11 @@ architecture rtl of czt_spi_core_2det is
                                       data_out_v => wr_en_comm_fifo_raw,
                                       data_in_ready => tx_ready);
 
-    validator_1: validate_command port map (
-       packet_in => in_comm_fifo,
-       packet_in_v => wr_en_comm_fifo_raw,
-       validation_bit => valid_packet
-    );
+    --validator_1: validate_command port map (
+      -- packet_in => in_comm_fifo,
+      -- packet_in_v => wr_en_comm_fifo_raw,
+      -- validation_bit => valid_packet
+    --);
 
 
 

@@ -90,7 +90,7 @@ architecture rtl of spi_slave is
             elsif curr_rx_state = rx_end then -- Complete RX and return to idle, push data_out_v high for exactly 1 cycle
                 if ss_rising_edge = '1' then
                     if deser_reg /= "00000000000000000000000000000000" then -- Drop 0s, this is to allow padding between packets
-                        data_out <= '1' & deser_reg (30 downto 0);
+                        data_out <= deser_reg (31 downto 0);
                         data_out_v <= '1';
                     end if;
                     curr_rx_state <= idle;
