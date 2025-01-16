@@ -13,6 +13,8 @@ Digilent CMOD A7-35T Board Rev. 1.2 file loaded in Vivado
 If you only have 1.1, change 1.2 to 1.1 on line 32 of generate_bitstream.tcl
 
 Some other points:
+It has been observed that adding this particular board is problematic in Vivado 2022.1. Vivado 2024.1 is a sufficient replacement if this occurs.
+
 If you modify the ports of the design, you will need to appropriately modify the connections in the tcl file
 num_jobs: Can be upto the number of cores on your device. Ideally half the cores for Intel CPUs
 main_clk_speed: FPGA Clk speed for the design
