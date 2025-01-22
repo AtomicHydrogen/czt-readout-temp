@@ -72,7 +72,7 @@ set_property -dict { PACKAGE_PIN K18   IOSTANDARD LVCMOS33 } [get_ports { ss_czt
 set_property -dict { PACKAGE_PIN U1    IOSTANDARD LVCMOS33 } [get_ports { ss_pynq }]; #IO_L3N_T0_DQS_34 Sch=pio[31]
 set_property -dict { PACKAGE_PIN W2    IOSTANDARD LVCMOS33 } [get_ports { miso_pynq }]; #IO_L5N_T0_34 Sch=pio[32]
 set_property -dict { PACKAGE_PIN V2    IOSTANDARD LVCMOS33 } [get_ports { sclk_pynq }]; #IO_L5P_T0_34 Sch=pio[33]
-create_clock -add -name sclk_pynq_pin -period 100.0 -waveform {0 50.0} [get_ports {sclk_pynq}]
+#create_clock -add -name sclk_pynq_pin -period 100.0 -waveform {0 50.0} [get_ports {sclk_pynq}]
 set_property -dict { PACKAGE_PIN W3    IOSTANDARD LVCMOS33 } [get_ports { mosi_pynq }]; #IO_L6N_T0_VREF_34 Sch=pio[34]
 #set_property -dict { PACKAGE_PIN V3    IOSTANDARD LVCMOS33 } [get_ports { evrm_0 }]; #IO_L6P_T0_34 Sch=pio[35]
 #set_property -dict { PACKAGE_PIN W5    IOSTANDARD LVCMOS33 } [get_ports { evrm_1 }]; #IO_L12P_T1_MRCC_34 Sch=pio[36]
@@ -135,4 +135,4 @@ set_property -dict { PACKAGE_PIN W3    IOSTANDARD LVCMOS33 } [get_ports { mosi_p
 #set_property -dict { PACKAGE_PIN R19   IOSTANDARD LVCMOS33 } [get_ports { RamWEn     }]; #IO_L10N_T1_D15_14 Sch=sram-we
 #set_property -dict { PACKAGE_PIN N19   IOSTANDARD LVCMOS33 } [get_ports { RamCEn     }]; #IO_L9N_T1_DQS_D13_14 Sch=sram-ce
 
-set_clock_groups -asynchronous -group [get_clocks sclk_pynq_pin] -group [get_clocks clk]
+#set_clock_groups -asynchronous -group [get_clocks sclk_pynq_pin] -group [get_clocks clk]

@@ -1,0 +1,373 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Wed Jan 22 18:44:58 2025
+# Process ID: 32064
+# Current directory: c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/block_design_czt_spi_core_0_0_synth_1
+# Command line: vivado.exe -log block_design_czt_spi_core_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source block_design_czt_spi_core_0_0.tcl
+# Log file: c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/block_design_czt_spi_core_0_0_synth_1/block_design_czt_spi_core_0_0.vds
+# Journal file: c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/block_design_czt_spi_core_0_0_synth_1\vivado.jou
+# Running On: Suchets-Laptop, OS: Windows, CPU Frequency: 3072 MHz, CPU Physical cores: 16, Host memory: 33777 MB
+#-----------------------------------------------------------
+source block_design_czt_spi_core_0_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/Suchet Gopal/Desktop/cmod_project/hdl'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.1/data/ip'.
+Command: synth_design -top block_design_czt_spi_core_0_0 -part xc7a35tcpg236-1 -incremental_mode off -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Device 21-403] Loading part xc7a35tcpg236-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 19992
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1295.777 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'block_design_czt_spi_core_0_0' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ip/block_design_czt_spi_core_0_0/synth/block_design_czt_spi_core_0_0.vhd:75]
+	Parameter packet_size_tx bound to: 64 - type: integer 
+	Parameter packet_size_rx bound to: 32 - type: integer 
+	Parameter packet_length bound to: 64 - type: integer 
+	Parameter timestamp_size bound to: 32 - type: integer 
+	Parameter data_in_size bound to: 32 - type: integer 
+	Parameter fifo_size bound to: 10 - type: integer 
+	Parameter packet_in bound to: 64 - type: integer 
+	Parameter packet_out bound to: 32 - type: integer 
+	Parameter limit bound to: 100 - type: integer 
+	Parameter OUT_WIDTH bound to: 32 - type: integer 
+	Parameter alert_bits bound to: 10 - type: integer 
+	Parameter czt_spi_clk_ratio bound to: 3 - type: integer 
+INFO: [Synth 8-3491] module 'czt_spi_core_2det' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:20' bound to instance 'U0' of component 'czt_spi_core_2det' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ip/block_design_czt_spi_core_0_0/synth/block_design_czt_spi_core_0_0.vhd:117]
+INFO: [Synth 8-638] synthesizing module 'czt_spi_core_2det' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:62]
+INFO: [Synth 8-3491] module 'data_concat' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_concat.vhdl:20' bound to instance 'data_concat_1' of component 'data_concat' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:232]
+INFO: [Synth 8-638] synthesizing module 'data_concat' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_concat.vhdl:33]
+INFO: [Synth 8-256] done synthesizing module 'data_concat' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_concat.vhdl:33]
+INFO: [Synth 8-3491] module 'data_concat' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_concat.vhdl:20' bound to instance 'data_concat_0' of component 'data_concat' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:237]
+INFO: [Synth 8-3491] module 'fifo' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_fifo.vhdl:24' bound to instance 'data_fifo_1' of component 'fifo' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:252]
+INFO: [Synth 8-638] synthesizing module 'fifo' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_fifo.vhdl:43]
+INFO: [Synth 8-256] done synthesizing module 'fifo' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_fifo.vhdl:43]
+INFO: [Synth 8-3491] module 'fifo' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/data_fifo.vhdl:24' bound to instance 'data_fifo_0' of component 'fifo' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:262]
+INFO: [Synth 8-3491] module 'command_fifo' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/command_fifo.vhdl:25' bound to instance 'command_fifo_1' of component 'command_fifo' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:272]
+INFO: [Synth 8-638] synthesizing module 'command_fifo' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/command_fifo.vhdl:49]
+INFO: [Synth 8-256] done synthesizing module 'command_fifo' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/command_fifo.vhdl:49]
+	Parameter DET_ID bound to: 1 - type: integer 
+	Parameter clk_ratio bound to: 3 - type: integer 
+INFO: [Synth 8-3491] module 'basic_czt_spi_controller' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:31' bound to instance 'czt_spi_controller_1' of component 'basic_czt_spi_controller' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:285]
+INFO: [Synth 8-638] synthesizing module 'basic_czt_spi_controller' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:83]
+INFO: [Synth 8-256] done synthesizing module 'basic_czt_spi_controller' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:83]
+	Parameter DET_ID bound to: 0 - type: integer 
+	Parameter clk_ratio bound to: 3 - type: integer 
+INFO: [Synth 8-3491] module 'basic_czt_spi_controller' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:31' bound to instance 'czt_spi_controller_0' of component 'basic_czt_spi_controller' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:306]
+INFO: [Synth 8-638] synthesizing module 'basic_czt_spi_controller__parameterized1' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:83]
+INFO: [Synth 8-256] done synthesizing module 'basic_czt_spi_controller__parameterized1' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:83]
+INFO: [Synth 8-3491] module 'clock_counter' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/clock_counter.vhdl:22' bound to instance 'clock_counter_1' of component 'clock_counter' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:329]
+INFO: [Synth 8-638] synthesizing module 'clock_counter' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/clock_counter.vhdl:35]
+WARNING: [Synth 8-614] signal 'trigger' is read in the process but is not in the sensitivity list [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/clock_counter.vhdl:61]
+INFO: [Synth 8-256] done synthesizing module 'clock_counter' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/clock_counter.vhdl:35]
+INFO: [Synth 8-3491] module 'tx_packetise' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/tx_packetise.vhdl:5' bound to instance 'tx_packetise_1' of component 'tx_packetise' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:335]
+INFO: [Synth 8-638] synthesizing module 'tx_packetise' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/tx_packetise.vhdl:24]
+INFO: [Synth 8-256] done synthesizing module 'tx_packetise' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/tx_packetise.vhdl:24]
+INFO: [Synth 8-3491] module 'spi_slave' declared at 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/spi_slave.vhdl:25' bound to instance 'spi_slave_1' of component 'spi_slave' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:349]
+INFO: [Synth 8-638] synthesizing module 'spi_slave' [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/spi_slave.vhdl:42]
+INFO: [Synth 8-256] done synthesizing module 'spi_slave' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/spi_slave.vhdl:42]
+INFO: [Synth 8-256] done synthesizing module 'czt_spi_core_2det' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:62]
+INFO: [Synth 8-256] done synthesizing module 'block_design_czt_spi_core_0_0' (0#1) [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ip/block_design_czt_spi_core_0_0/synth/block_design_czt_spi_core_0_0.vhd:75]
+WARNING: [Synth 8-6014] Unused sequential element ser_queue_reg was removed.  [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:150]
+WARNING: [Synth 8-6014] Unused sequential element ser_queue_reg was removed.  [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/basic_czt_spi.vhdl:150]
+WARNING: [Synth 8-3848] Net valid_packet in module/entity czt_spi_core_2det does not have driver. [c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.gen/sources_1/bd/block_design/ipshared/ae07/czt_spi_core_2det.vhdl:215]
+WARNING: [Synth 8-7129] Port wdog_hang in module basic_czt_spi_controller__parameterized1 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wdog_hang in module basic_czt_spi_controller is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1295.777 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1295.777 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1295.777 ; gain = 0.000
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.208 . Memory (MB): peak = 1295.777 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1376.992 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.259 . Memory (MB): peak = 1377.578 ; gain = 0.586
+INFO: [Designutils 20-5008] Incremental synthesis strategy off
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1377.578 ; gain = 81.801
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35tcpg236-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1377.578 ; gain = 81.801
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1377.578 ; gain = 81.801
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'present_substate_reg' in module 'basic_czt_spi_controller'
+INFO: [Synth 8-802] inferred FSM for state register 'present_substate_reg' in module 'basic_czt_spi_controller__parameterized1'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'tx_packetise'
+INFO: [Synth 8-802] inferred FSM for state register 'curr_rx_state_reg' in module 'spi_slave'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                   start |                             0000 |                             0000
+              busy_check |                             0001 |                             0101
+                 tx_init |                             0010 |                             1000
+                      tx |                             0011 |                             0010
+                  tx_end |                             0100 |                             1010
+         busy_check_fail |                             0101 |                             0110
+             exist_check |                             0110 |                             0011
+                 rx_init |                             0111 |                             0111
+                      rx |                             1000 |                             0001
+                  rx_end |                             1001 |                             1001
+              fifo_deque |                             1010 |                             1011
+        exist_check_fail |                             1011 |                             0100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'present_substate_reg' using encoding 'sequential' in module 'basic_czt_spi_controller'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                   start |                             0000 |                             0000
+              busy_check |                             0001 |                             0101
+                 tx_init |                             0010 |                             1000
+                      tx |                             0011 |                             0010
+                  tx_end |                             0100 |                             1010
+         busy_check_fail |                             0101 |                             0110
+             exist_check |                             0110 |                             0011
+                 rx_init |                             0111 |                             0111
+                      rx |                             1000 |                             0001
+                  rx_end |                             1001 |                             1001
+              fifo_deque |                             1010 |                             1011
+        exist_check_fail |                             1011 |                             0100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'present_substate_reg' using encoding 'sequential' in module 'basic_czt_spi_controller__parameterized1'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                               00 |                               00
+              send_first |                               01 |                               01
+                  reload |                               10 |                               11
+             send_second |                               11 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'tx_packetise'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE0 |                               00 |                               00
+                  iSTATE |                               01 |                               10
+                 iSTATE1 |                               10 |                               11
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'curr_rx_state_reg' using encoding 'sequential' in module 'spi_slave'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 1377.578 ; gain = 81.801
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 1     
+	   2 Input   13 Bit       Adders := 6     
+	   3 Input   13 Bit       Adders := 4     
+	   2 Input    7 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 2     
+	   2 Input    5 Bit       Adders := 8     
++---XORs : 
+	  16 Input      1 Bit         XORs := 2     
+	   8 Input      1 Bit         XORs := 2     
++---Registers : 
+	               64 Bit    Registers := 128   
+	               32 Bit    Registers := 50    
+	               25 Bit    Registers := 2     
+	               18 Bit    Registers := 4     
+	               13 Bit    Registers := 2     
+	               10 Bit    Registers := 2     
+	                7 Bit    Registers := 1     
+	                6 Bit    Registers := 2     
+	                5 Bit    Registers := 8     
+	                3 Bit    Registers := 3     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 29    
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 385   
+	   2 Input   32 Bit        Muxes := 128   
+	  12 Input   32 Bit        Muxes := 2     
+	   4 Input   32 Bit        Muxes := 1     
+	  12 Input   25 Bit        Muxes := 2     
+	   2 Input   18 Bit        Muxes := 8     
+	  12 Input   18 Bit        Muxes := 2     
+	   2 Input   13 Bit        Muxes := 8     
+	   2 Input   10 Bit        Muxes := 6     
+	   2 Input    6 Bit        Muxes := 2     
+	   2 Input    5 Bit        Muxes := 4     
+	  12 Input    5 Bit        Muxes := 4     
+	  12 Input    4 Bit        Muxes := 2     
+	   2 Input    4 Bit        Muxes := 40    
+	   3 Input    4 Bit        Muxes := 2     
+	  12 Input    3 Bit        Muxes := 2     
+	   2 Input    3 Bit        Muxes := 4     
+	   2 Input    2 Bit        Muxes := 8     
+	   3 Input    2 Bit        Muxes := 3     
+	   4 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 620   
+	   3 Input    1 Bit        Muxes := 3     
+	   5 Input    1 Bit        Muxes := 5     
+	  12 Input    1 Bit        Muxes := 28    
+	   4 Input    1 Bit        Muxes := 11    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:30 ; elapsed = 00:01:36 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:36 ; elapsed = 00:01:43 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:36 ; elapsed = 00:01:43 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:40 ; elapsed = 00:01:47 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+CRITICAL WARNING: [Synth 8-5799] Converted tricell instance 'spi_slave_1i_13900' to logic
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:45 ; elapsed = 00:01:53 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:45 ; elapsed = 00:01:53 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:46 ; elapsed = 00:01:54 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:46 ; elapsed = 00:01:54 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:55 ; elapsed = 00:02:03 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:55 ; elapsed = 00:02:03 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY4 |    54|
+|2     |LUT1   |    65|
+|3     |LUT2   |  1709|
+|4     |LUT3   |   211|
+|5     |LUT4   |   318|
+|6     |LUT5   |  2303|
+|7     |LUT6   |  8190|
+|8     |MUXF7  |  1092|
+|9     |MUXF8  |   546|
+|10    |FDCE   |  9419|
+|11    |FDPE   |    47|
+|12    |FDRE   |   171|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:55 ; elapsed = 00:02:03 . Memory (MB): peak = 1403.516 ; gain = 107.738
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 1 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:45 ; elapsed = 00:01:59 . Memory (MB): peak = 1403.516 ; gain = 25.938
+Synthesis Optimization Complete : Time (s): cpu = 00:01:56 ; elapsed = 00:02:03 . Memory (MB): peak = 1403.516 ; gain = 107.738
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.235 . Memory (MB): peak = 1403.516 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1692 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1403.516 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: 5c141cd3
+INFO: [Common 17-83] Releasing license: Synthesis
+57 Infos, 7 Warnings, 1 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:02:02 ; elapsed = 00:02:11 . Memory (MB): peak = 1403.516 ; gain = 107.738
+INFO: [Common 17-1381] The checkpoint 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/block_design_czt_spi_core_0_0_synth_1/block_design_czt_spi_core_0_0.dcp' has been generated.
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
+INFO: [Coretcl 2-1174] Renamed 9 cell refs.
+INFO: [Common 17-1381] The checkpoint 'c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/block_design_czt_spi_core_0_0_synth_1/block_design_czt_spi_core_0_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file block_design_czt_spi_core_0_0_utilization_synth.rpt -pb block_design_czt_spi_core_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Wed Jan 22 18:47:23 2025...

@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Wed Jan 22 18:47:27 2025
+# Process ID: 26892
+# Current directory: c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/synth_1
+# Command line: vivado.exe -log block_design_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source block_design_wrapper.tcl
+# Log file: c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/synth_1/block_design_wrapper.vds
+# Journal file: c:/Users/Suchet Gopal/Desktop/cmod_project/scripts/project/cmod_a7.runs/synth_1\vivado.jou
+# Running On: Suchets-Laptop, OS: Windows, CPU Frequency: 3072 MHz, CPU Physical cores: 16, Host memory: 33777 MB
+#-----------------------------------------------------------
+source block_design_wrapper.tcl -notrace

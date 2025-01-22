@@ -1,5 +1,5 @@
 # Define a procedure to create and configure the Vivado project
-proc generate_design {jobs clk_speed spi_clk_ratio} {
+proc generate_design {clk_speed spi_clk_ratio jobs} {
 
     # Set paths
     set hdl_path "../hdl"

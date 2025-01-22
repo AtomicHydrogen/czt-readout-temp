@@ -3,7 +3,7 @@ Steps to generate bitstream:
 2. Open Vivado 2022.1 TCL Shell
 3. cd <path>, where the path points to the scripts folder, place path in quotes if it has spaces, also use / instead of \.
 4. In TCL Shell: source main.tcl -notrace
-5. In TCL Shell: generate_design <num_jobs> <main_clk_speed> <czt_spi_clk_ratio>
+5. In TCL Shell: generate_design <main_clk_speed> <czt_spi_clk_ratio> <oversampling_clk speed> <num_jobs>
 6. Check outputs folder after script completes. It should open the GUI as well.
 7. In between runs, in TCL Shell: reset (resets all outputs and erases project)
 
