@@ -1,9 +1,0 @@
-{
-	"version": "1.0",
-	"modules": {
-		"block_design": {
-			"proto_instances": {
-			}
-		}
-	}
-}

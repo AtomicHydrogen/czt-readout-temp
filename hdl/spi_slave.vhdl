@@ -27,6 +27,7 @@ entity spi_slave is
        clk        : in  STD_LOGIC;
        reset      : in  STD_LOGIC;                                       
        miso       : out STD_LOGIC;
+       miso_en    : out STD_LOGIC;
        mosi       : in  STD_LOGIC;	                                        
        sclk       : in  STD_LOGIC;
        ss         : in  STD_LOGIC;
@@ -59,7 +60,11 @@ architecture rtl of spi_slave is
     signal sclk_prev, ss_prev     : STD_LOGIC := '1';  -- Previous state of synchronized SCLK
     signal sclk_falling_edge, sclk_rising_edge, ss_falling_edge, ss_rising_edge : STD_LOGIC := '0'; -- Edge detection signals
 	signal miso_enable : STD_LOGIC := '0'; 
+    signal miso_protector : STD_LOGIC := '0';
 	begin
+    
+
+
 
     rx_proc: process (clk, reset) begin
         if reset = '1' then -- Restart in idle, clear all registers
@@ -157,8 +162,9 @@ architecture rtl of spi_slave is
         end if;
     end process;
 
-    miso <= ser_reg(packet_size - 1) when miso_enable = '1' else 'Z'; 
-
+    miso_protector <= '1' when ss_sync = '0' else '0'; -- Protect MISO when SS is high
+    miso <= ser_reg(packet_size - 1);
+    miso_en <= miso_enable and miso_protector;
     -- CDC Block for signals
     sampling_proc: process(clk, reset)
     begin

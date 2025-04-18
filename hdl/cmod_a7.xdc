@@ -8,11 +8,10 @@ set_property CONFIG_VOLTAGE 3.3 [current_design]
 
 ## 12 MHz Clock Signal
 set_property -dict { PACKAGE_PIN L17   IOSTANDARD LVCMOS33 } [get_ports { clk }]; #IO_L12P_T1_MRCC_14 Sch=gclk
-create_clock -add -name sys_clk_pin -period 83.33 -waveform {0 41.66} [get_ports {clk}];
 
 
 ## LEDs
-#set_property -dict { PACKAGE_PIN A17   IOSTANDARD LVCMOS33 } [get_ports { led[0] }]; #IO_L12N_T1_MRCC_16 Sch=led[1]
+set_property -dict { PACKAGE_PIN A17   IOSTANDARD LVCMOS33 } [get_ports { rst_status }]; #IO_L12N_T1_MRCC_16 Sch=led[1]
 #set_property -dict { PACKAGE_PIN C16   IOSTANDARD LVCMOS33 } [get_ports { led[1] }]; #IO_L13P_T2_MRCC_16 Sch=led[2]
 
 ## RGB LED
@@ -26,11 +25,11 @@ set_property -dict { PACKAGE_PIN A18   IOSTANDARD LVCMOS33 } [get_ports { reset 
 
 ## Pmod Header JA
 set_property -dict { PACKAGE_PIN G17   IOSTANDARD LVCMOS33 } [get_ports { mosi_czt_0 }]; #IO_L5N_T0_D07_14 Sch=ja[1]
-set_property -dict { PACKAGE_PIN G19   IOSTANDARD LVCMOS33 } [get_ports { sclk_czt_0 }]; #IO_L4N_T0_D05_14 Sch=ja[2]
+#set_property -dict { PACKAGE_PIN G19   IOSTANDARD LVCMOS33 } [get_ports { sclk_czt_0 }]; #IO_L4N_T0_D05_14 Sch=ja[2]
 set_property -dict { PACKAGE_PIN N18   IOSTANDARD LVCMOS33 } [get_ports { miso_czt_0 }]; #IO_L9P_T1_DQS_14 Sch=ja[3]
 set_property -dict { PACKAGE_PIN L18   IOSTANDARD LVCMOS33 } [get_ports { ss_czt_0 }]; #IO_L8P_T1_D11_14 Sch=ja[4]
 set_property -dict { PACKAGE_PIN H17   IOSTANDARD LVCMOS33 } [get_ports { mosi_czt_1 }]; #IO_L5P_T0_D06_14 Sch=ja[7]
-set_property -dict { PACKAGE_PIN H19   IOSTANDARD LVCMOS33 } [get_ports { sclk_czt_1 }]; #IO_L4P_T0_D04_14 Sch=ja[8]
+#set_property -dict { PACKAGE_PIN H19   IOSTANDARD LVCMOS33 } [get_ports { sclk_czt_1 }]; #IO_L4P_T0_D04_14 Sch=ja[8]
 set_property -dict { PACKAGE_PIN J19   IOSTANDARD LVCMOS33 } [get_ports { miso_czt_1 }]; #IO_L6N_T0_D08_VREF_14 Sch=ja[9]
 set_property -dict { PACKAGE_PIN K18   IOSTANDARD LVCMOS33 } [get_ports { ss_czt_1 }]; #IO_L8N_T1_D12_14 Sch=ja[10]
 
@@ -58,8 +57,8 @@ set_property -dict { PACKAGE_PIN K18   IOSTANDARD LVCMOS33 } [get_ports { ss_czt
 #set_property -dict { PACKAGE_PIN L1    IOSTANDARD LVCMOS33 } [get_ports { pio13 }]; #IO_L6N_T0_VREF_35 Sch=pio[13]
 #set_property -dict { PACKAGE_PIN L2    IOSTANDARD LVCMOS33 } [get_ports { pio14 }]; #IO_L5N_T0_AD13N_35 Sch=pio[14]
 #set_property -dict { PACKAGE_PIN M1    IOSTANDARD LVCMOS33 } [get_ports { pio17 }]; #IO_L9N_T1_DQS_AD7N_35 Sch=pio[17]
-#set_property -dict { PACKAGE_PIN N3    IOSTANDARD LVCMOS33 } [get_ports { pio18 }]; #IO_L12P_T1_MRCC_35 Sch=pio[18]
-#set_property -dict { PACKAGE_PIN P3    IOSTANDARD LVCMOS33 } [get_ports { pio19 }]; #IO_L12N_T1_MRCC_35 Sch=pio[19]
+set_property -dict { PACKAGE_PIN N3    IOSTANDARD LVCMOS33 } [get_ports { sclk_czt_0 }]; #IO_L12P_T1_MRCC_35 Sch=pio[18]
+set_property -dict { PACKAGE_PIN P3    IOSTANDARD LVCMOS33 } [get_ports { sclk_czt_1 }]; #IO_L12N_T1_MRCC_35 Sch=pio[19]
 #set_property -dict { PACKAGE_PIN M2    IOSTANDARD LVCMOS33 } [get_ports { pio20 }]; #IO_L9P_T1_DQS_AD7P_35 Sch=pio[20]
 #set_property -dict { PACKAGE_PIN N1    IOSTANDARD LVCMOS33 } [get_ports { pio21 }]; #IO_L10N_T1_AD15N_35 Sch=pio[21]
 #set_property -dict { PACKAGE_PIN N2    IOSTANDARD LVCMOS33 } [get_ports { pio22 }]; #IO_L10P_T1_AD15P_35 Sch=pio[22]
@@ -69,17 +68,16 @@ set_property -dict { PACKAGE_PIN K18   IOSTANDARD LVCMOS33 } [get_ports { ss_czt
 #set_property -dict { PACKAGE_PIN R2    IOSTANDARD LVCMOS33 } [get_ports { pio28 }]; #IO_L1P_T0_34 Sch=pio[28]
 #set_property -dict { PACKAGE_PIN T1    IOSTANDARD LVCMOS33 } [get_ports { pio29 }]; #IO_L3P_T0_DQS_34 Sch=pio[29]
 #set_property -dict { PACKAGE_PIN T2    IOSTANDARD LVCMOS33 } [get_ports { pio30 }]; #IO_L1N_T0_34 Sch=pio[30]
-set_property -dict { PACKAGE_PIN U1    IOSTANDARD LVCMOS33 } [get_ports { ss_pynq }]; #IO_L3N_T0_DQS_34 Sch=pio[31]
-set_property -dict { PACKAGE_PIN W2    IOSTANDARD LVCMOS33 } [get_ports { miso_pynq }]; #IO_L5N_T0_34 Sch=pio[32]
-set_property -dict { PACKAGE_PIN V2    IOSTANDARD LVCMOS33 } [get_ports { sclk_pynq }]; #IO_L5P_T0_34 Sch=pio[33]
-#create_clock -add -name sclk_pynq_pin -period 100.0 -waveform {0 50.0} [get_ports {sclk_pynq}]
-set_property -dict { PACKAGE_PIN W3    IOSTANDARD LVCMOS33 } [get_ports { mosi_pynq }]; #IO_L6N_T0_VREF_34 Sch=pio[34]
+set_property -dict { PACKAGE_PIN U1    IOSTANDARD LVCMOS33 } [get_ports { spi_cs }]; #IO_L3N_T0_DQS_34 Sch=pio[31]
+set_property -dict { PACKAGE_PIN W2    IOSTANDARD LVCMOS33 } [get_ports { spi_miso }]; #IO_L5N_T0_34 Sch=pio[32]
+#set_property -dict { PACKAGE_PIN V2    IOSTANDARD LVCMOS33 } [get_ports { spi_sck }]; #IO_L5P_T0_34 Sch=pio[33]
+set_property -dict { PACKAGE_PIN W3    IOSTANDARD LVCMOS33 } [get_ports { spi_mosi }]; #IO_L6N_T0_VREF_34 Sch=pio[34]
 #set_property -dict { PACKAGE_PIN V3    IOSTANDARD LVCMOS33 } [get_ports { evrm_0 }]; #IO_L6P_T0_34 Sch=pio[35]
 #set_property -dict { PACKAGE_PIN W5    IOSTANDARD LVCMOS33 } [get_ports { evrm_1 }]; #IO_L12P_T1_MRCC_34 Sch=pio[36]
 #set_property -dict { PACKAGE_PIN V4    IOSTANDARD LVCMOS33 } [get_ports { pio37 }]; #IO_L11N_T1_SRCC_34 Sch=pio[37]
 #set_property -dict { PACKAGE_PIN U4    IOSTANDARD LVCMOS33 } [get_ports { pio38 }]; #IO_L11P_T1_SRCC_34 Sch=pio[38]
 #set_property -dict { PACKAGE_PIN V5    IOSTANDARD LVCMOS33 } [get_ports { pio39 }]; #IO_L16N_T2_34 Sch=pio[39]
-#set_property -dict { PACKAGE_PIN W4    IOSTANDARD LVCMOS33 } [get_ports { pio40 }]; #IO_L12N_T1_MRCC_34 Sch=pio[40]
+set_property -dict { PACKAGE_PIN W4    IOSTANDARD LVCMOS33 } [get_ports { spi_sck }]; #IO_L12N_T1_MRCC_34 Sch=pio[40]
 #set_property -dict { PACKAGE_PIN U5    IOSTANDARD LVCMOS33 } [get_ports { pio41 }]; #IO_L16P_T2_34 Sch=pio[41]
 #set_property -dict { PACKAGE_PIN U2    IOSTANDARD LVCMOS33 } [get_ports { pio42 }]; #IO_L9N_T1_DQS_34 Sch=pio[42]
 #set_property -dict { PACKAGE_PIN W6    IOSTANDARD LVCMOS33 } [get_ports { pio43 }]; #IO_L13N_T2_MRCC_34 Sch=pio[43]
@@ -136,3 +134,20 @@ set_property -dict { PACKAGE_PIN W3    IOSTANDARD LVCMOS33 } [get_ports { mosi_p
 #set_property -dict { PACKAGE_PIN N19   IOSTANDARD LVCMOS33 } [get_ports { RamCEn     }]; #IO_L9N_T1_DQS_D13_14 Sch=sram-ce
 
 #set_clock_groups -asynchronous -group [get_clocks sclk_pynq_pin] -group [get_clocks clk]
+    
+create_clock -add -name spi_sck -period 50.0 -waveform {0 25.0} [get_ports {spi_sck}]
+
+set_input_delay -max 8.0 -clock [get_clocks spi_sck] [get_ports spi_mosi]
+set_input_delay -min 1.0 -clock [get_clocks spi_sck] [get_ports spi_mosi]
+set_input_delay -max 8.0 -clock [get_clocks spi_sck] [get_ports spi_cs]
+set_input_delay -min 1.0 -clock [get_clocks spi_sck] [get_ports spi_cs]
+set_output_delay -max 10.0 -clock [get_clocks spi_sck] [get_ports spi_miso]
+set_output_delay -min 2.0 -clock [get_clocks spi_sck] [get_ports spi_miso]
+
+
+set_clock_groups -asynchronous -group [get_clocks spi_sck] -group [get_clocks clk]
+set_false_path -from [get_clocks spi_sck] -to [get_clocks clk_out1_block_design_clk_wiz_0_0]
+set_false_path -from [get_clocks clk_out1_block_design_clk_wiz_0_0] -to [get_clocks spi_sck]
+
+create_generated_clock -name sck_czt_0 -source [get_pins block_design_i/clk_wiz_0/clk_out1] -divide_by 2 [get_pins block_design_i/czt_spi_core_0/U0/czt_spi_controller_0/spi_clk_reg/Q] 
+create_generated_clock -name sck_czt_1 -source [get_pins block_design_i/clk_wiz_0/clk_out1] -divide_by 2 [get_pins block_design_i/czt_spi_core_0/U0/czt_spi_controller_1/spi_clk_reg/Q] 

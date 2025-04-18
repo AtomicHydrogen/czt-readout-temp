@@ -24,7 +24,7 @@ use     ieee.math_real.all;
 
 entity spi_slave_tx_sync is
     generic (
-       packet_length : INTEGER := 32  
+       packet_length : INTEGER := 32
     );
     port (
        master_clk      : in  STD_LOGIC;
@@ -49,8 +49,8 @@ architecture rtl of spi_slave_tx_sync is
     constant tx_count_width : integer := integer(ceil(log2(real(packet_size))));
 
 
-    signal   deser_reg : STD_LOGIC_VECTOR(packet_size - 1 downto 0);
-    signal   ser_reg   : STD_LOGIC_VECTOR(packet_size - 1 downto 0);
+    signal   deser_reg, deser_reg_sync1, deser_reg_sync : STD_LOGIC_VECTOR(packet_size - 1 downto 0);
+    signal   ser_reg  : STD_LOGIC_VECTOR(packet_size - 1 downto 0);
     signal   rx_count  : UNSIGNED(rx_count_width - 1 downto 0);
     signal   tx_count  : UNSIGNED(tx_count_width - 1 downto 0);
 
@@ -63,24 +63,45 @@ architecture rtl of spi_slave_tx_sync is
     signal ser_rdy, deser_rdy, tx_ready : STD_LOGIC := '0';
 	signal miso_enable : STD_LOGIC := '0'; 
     signal spi_active, spi_f_active, spi_r_active  : STD_LOGIC := '0';
-    signal xclk : STD_LOGIC := '0';
-    signal xclk_bar : STD_LOGIC := '1';
+    signal xclk, xclk_sync1, xclk_sync : STD_LOGIC := '0';
+    signal xclk_bar, xclk_bar_sync1, xclk_bar_sync : STD_LOGIC := '1';
+    signal xclk_bar_prev, xclk_prev, xclk_f, xclk_bar_f : STD_LOGIC;
     signal error_reset : STD_LOGIC := '0';
     signal fsm_reset   : STD_LOGIC := '0';
+    constant zeroes : STD_LOGIC_VECTOR(30 downto 0) := (others => '0');
 
     signal master_clk_bar, rx_fifo_wr_en, tx_fifo_rd_en, tx_fifo_empty, tx_fifo_full, rx_fifo_empty, rx_fifo_full: STD_LOGIC;
+    signal tx_fifo_rd_en_sync1, tx_fifo_rd_en_sync, rx_fifo_wr_en_sync1, rx_fifo_wr_en_sync : STD_LOGIC := '0';
+     
+    
     signal tx_fifo_data_out : STD_LOGIC_VECTOR(packet_size -1 downto 0);
 
 
-    signal mosi_sync, ss_sync, sclk_sync : STD_LOGIC;
+    signal mosi_sync, ss_sync, sclk_sync, mosi_sync1, ss_sync1, sclk_sync1 : STD_LOGIC;
     signal sclk_prev, ss_prev     : STD_LOGIC := '1';  -- Previous state of synchronized SCLK
     signal sclk_falling_edge, sclk_rising_edge, ss_falling_edge, ss_rising_edge : STD_LOGIC := '0';
     -- RX FIFO: NOT SCLK
     -- TX FIFO: SCLK
     component sync_fifo is
         port (
-            read_clock : in STD_LOGIC;
-            write_clock : in STD_LOGIC;
+            sync_clock : in STD_LOGIC;
+            sync_clock_prev : in STD_LOGIC;
+            main_clock : in STD_LOGIC;
+            data_in : in STD_LOGIC_VECTOR(packet_length - 1 downto 0);     -- Data coming in to FIFO
+            clear : in STD_LOGIC;														  -- Clears FIFO and resets head and tail to beginning
+            wr_en : in STD_LOGIC;														  -- Write enable, controlled by the module to which data is being sent
+            rd_en : in STD_LOGIC; 													  -- Read enable, controlled by module from which data is acquired
+            data_out : out STD_LOGIC_VECTOR(packet_length - 1 downto 0) := (others => '0');    -- Output
+            fifo_full : out STD_LOGIC := '0';								-- Active high
+            fifo_empty : out STD_LOGIC := '1'
+        );
+    end component;
+
+    component sync_fifo_cdc is
+        port (
+            main_clock : in STD_LOGIC;
+            sync_clock : in STD_LOGIC;
+            sync_clock_prev : in STD_LOGIC;
             data_in : in STD_LOGIC_VECTOR(packet_length - 1 downto 0);     -- Data coming in to FIFO
             clear : in STD_LOGIC;														  -- Clears FIFO and resets head and tail to beginning
             wr_en : in STD_LOGIC;														  -- Write enable, controlled by the module to which data is being sent
@@ -148,7 +169,7 @@ architecture rtl of spi_slave_tx_sync is
             if curr_rx_state = idle and spi_active = '1' then
                 rx_fifo_wr_en <= '0';
                 curr_rx_state <= rx;
-                deser_reg     <= "0000000000000000000000000000000" & mosi;
+                deser_reg     <= zeroes & mosi;
                 rx_count      <= to_unsigned(1, rx_count_width);
             elsif curr_rx_state = rx then
                 deser_reg(packet_size -1 downto 1) <= deser_reg(packet_size - 2 downto 0);
@@ -214,11 +235,12 @@ architecture rtl of spi_slave_tx_sync is
 
     miso <= ser_reg(packet_size - 1) when miso_enable = '1' else 'Z';
 
-    rx_fifo: sync_fifo port map (
-                read_clock  => slave_clk,
-                write_clock => xclk_bar,
-                data_in     => deser_reg,
-                wr_en       => rx_fifo_wr_en,
+    rx_fifo: sync_fifo_cdc port map (
+                main_clock  => slave_clk,
+                sync_clock => xclk_bar_sync,
+                sync_clock_prev => xclk_bar_prev,
+                data_in     => deser_reg_sync,
+                wr_en       => rx_fifo_wr_en_sync,
                 rd_en       => data_out_ready,
                 data_out    => data_out,
                 fifo_full   => rx_fifo_full,
@@ -226,11 +248,12 @@ architecture rtl of spi_slave_tx_sync is
                 clear => reset );
 
     tx_fifo: sync_fifo port map (
-                read_clock  => xclk,
-                write_clock => slave_clk,
+                sync_clock  => xclk_sync,
+                sync_clock_prev => xclk_prev,
+                main_clock => slave_clk,
                 data_in     => data_in,
                 wr_en       => data_in_v,
-                rd_en       => tx_fifo_rd_en,
+                rd_en       => tx_fifo_rd_en_sync,
                 data_out    => tx_fifo_data_out,
                 fifo_full   => tx_fifo_full,
                 fifo_empty  => tx_fifo_empty,
@@ -257,9 +280,48 @@ architecture rtl of spi_slave_tx_sync is
             sclk_prev <= sclk_sync;
             ss_prev   <= ss_sync;
             -- Assign synchronized outputs
-            mosi_sync <= mosi;
-            sclk_sync <= sclk;
-            ss_sync   <= ss;
+            mosi_sync1 <= mosi;
+            sclk_sync1 <= sclk;
+            ss_sync1   <= ss;
+            
+            mosi_sync <= mosi_sync1;
+            sclk_sync <= sclk_sync1;
+            ss_sync   <= ss_sync1;
+
+        end if;
+    end process;
+    
+    cdc_spi_clk_to_main_clk_proc : process (slave_clk, reset) begin
+        if reset = '1' then
+        -- Initial conditions
+            xclk_sync1 <= '0';
+            xclk_sync <= '0';
+            xclk_bar_sync1 <= '0';
+            xclk_bar_sync <= '0';
+            tx_fifo_rd_en_sync1 <= '0';
+            tx_fifo_rd_en_sync  <= '0';
+            rx_fifo_wr_en_sync1 <= '0';
+            rx_fifo_wr_en_sync  <= '0';
+            deser_reg_sync1 <= (others => '0');
+            deser_reg_sync  <= (others => '0');
+            
+            
+        elsif falling_edge(slave_clk) then
+        
+            xclk_sync1         <= xclk;
+            xclk_sync          <= xclk_sync1;
+            xclk_bar_sync1     <= xclk_bar;
+            xclk_bar_sync      <= xclk_bar_sync1;
+            tx_fifo_rd_en_sync1 <= tx_fifo_rd_en;
+            tx_fifo_rd_en_sync  <= tx_fifo_rd_en_sync1;
+            rx_fifo_wr_en_sync1 <= rx_fifo_wr_en;
+            rx_fifo_wr_en_sync  <= rx_fifo_wr_en_sync1;
+            deser_reg_sync1     <= deser_reg;
+            deser_reg_sync      <= deser_reg_sync1;
+            
+            xclk_bar_prev       <= xclk_bar_sync;
+            xclk_prev           <= xclk_sync;
+
 
         end if;
     end process;

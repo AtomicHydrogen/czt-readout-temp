@@ -23,8 +23,9 @@ entity sync_fifo is
     );
    
     port (
-		read_clock : in STD_LOGIC;
-        write_clock : in STD_LOGIC;
+		sync_clock : in STD_LOGIC;
+		sync_clock_prev : in STD_LOGIC;
+        main_clock : in STD_LOGIC;
         data_in : in STD_LOGIC_VECTOR(packet_length - 1 downto 0);     -- Data coming in to FIFO
         clear : in STD_LOGIC;														  -- Clears FIFO and resets head and tail to beginning
         wr_en : in STD_LOGIC;														  -- Write enable, controlled by the module to which data is being sent
@@ -47,7 +48,7 @@ architecture rtl of sync_fifo is
 begin
 	
 	data_out <= fifo_buffer(to_integer(tail));
-    process (write_clock, read_clock, clear, head, tail)
+    process (main_clock, clear, head, tail)
     begin  
 	 
 		-- Clears the buffer, and resets head and tail to zero. Also makes fifo_empty 0 and fifo_full 1 since it has been cleared
@@ -58,7 +59,7 @@ begin
 
 		-- Negative edge clock
 		else 
-			if(falling_edge(write_clock)) then
+			if(falling_edge(main_clock)) then
                 -- If write enable is enabled
                 -- data_in is written to the register pointed to by the head
                 if (wr_en = '1' and full_temp = '0' and data_in /= zeroes) then
@@ -72,19 +73,21 @@ begin
                 end if;
             end if;
 
-            if(falling_edge(read_clock)) then
-                -- If read enable is enabled
-                -- data_out is taken from the register pointed to by the tail
-                if (rd_en = '1') then
-                
-                    -- Only takes data_out from the register if fifo is not empty, else it sends zeroes. Also clears the register that is read from
-                    if (not (head = tail)) then
-                        -- If tail reaches the end, it wraps back around, else increments
-                        if (tail = fifo_size - 1) then
-                            tail <= (others => '0');
-                        else 
-                            tail <= tail + 1;
-                        end if;					
+            if(falling_edge(main_clock)) then
+                    -- If read enable is enabled
+                    -- data_out is taken from the register pointed to by the tail
+                if(sync_clock_prev = '1' and sync_clock = '0') then
+                    if (rd_en = '1') then
+                    
+                        -- Only takes data_out from the register if fifo is not empty, else it sends zeroes. Also clears the register that is read from
+                        if (not (head = tail)) then
+                            -- If tail reaches the end, it wraps back around, else increments
+                            if (tail = fifo_size - 1) then
+                                tail <= (others => '0');
+                            else 
+                                tail <= tail + 1;
+                            end if;					
+                        end if;
                     end if;
                 end if;
             end if;

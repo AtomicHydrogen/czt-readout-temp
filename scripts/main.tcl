@@ -67,15 +67,17 @@ proc generate_design {clk_speed spi_clk_ratio jobs} {
     create_bd_port -dir O mosi_czt_1
     create_bd_port -dir O sclk_czt_1
     create_bd_port -dir O ss_czt_1
-
-    create_bd_port -dir O miso_pynq
-    create_bd_port -dir I mosi_pynq
-    create_bd_port -dir I sclk_pynq
-    create_bd_port -dir I ss_pynq
+    
+    create_bd_port -dir O spi_miso
+    create_bd_port -dir I spi_mosi
+    create_bd_port -dir I spi_sck
+    create_bd_port -dir I spi_cs
 
     # Create ports for clock and reset
     create_bd_port -dir I clk
     create_bd_port -dir I reset
+
+    create_bd_port -dir O rst_status
 
     # Connect the clock wizard to the block design ports
     puts "Connecting Clock Wizard..."
@@ -86,6 +88,7 @@ proc generate_design {clk_speed spi_clk_ratio jobs} {
     # Connect the custom IP
     puts "Connecting custom IP..."
     # Connect ports to czt_spi_core
+    
     connect_bd_net [get_bd_ports miso_czt_0] [get_bd_pins czt_spi_core_0/miso_czt_0]
     connect_bd_net [get_bd_ports mosi_czt_0] [get_bd_pins czt_spi_core_0/mosi_czt_0]
     connect_bd_net [get_bd_ports sclk_czt_0] [get_bd_pins czt_spi_core_0/sclk_czt_0]
@@ -96,13 +99,19 @@ proc generate_design {clk_speed spi_clk_ratio jobs} {
     connect_bd_net [get_bd_ports sclk_czt_1] [get_bd_pins czt_spi_core_0/sclk_czt_1]
     connect_bd_net [get_bd_ports ss_czt_1]   [get_bd_pins czt_spi_core_0/ss_czt_1]
 
-    connect_bd_net [get_bd_ports miso_pynq] [get_bd_pins czt_spi_core_0/miso_pynq]
-    connect_bd_net [get_bd_ports mosi_pynq] [get_bd_pins czt_spi_core_0/mosi_pynq]
-    connect_bd_net [get_bd_ports sclk_pynq] [get_bd_pins czt_spi_core_0/sclk_pynq]
-    connect_bd_net [get_bd_ports ss_pynq]   [get_bd_pins czt_spi_core_0/ss_pynq]
+    connect_bd_net [get_bd_ports spi_miso] [get_bd_pins czt_spi_core_0/spi_miso]
+    connect_bd_net [get_bd_ports spi_mosi] [get_bd_pins czt_spi_core_0/spi_mosi]
+    connect_bd_net [get_bd_ports spi_sck] [get_bd_pins czt_spi_core_0/spi_sck]
+    connect_bd_net [get_bd_ports spi_cs]   [get_bd_pins czt_spi_core_0/spi_cs]
 
+    connect_bd_net [get_bd_ports rst_status] [get_bd_pins czt_spi_core_0/clr_status]
+    
+  
     # Connect clock and reset
     connect_bd_net [get_bd_ports reset]     [get_bd_pins czt_spi_core_0/sys_clr]
+
+
+
 
     # Validate the block design
     puts "Validating block design..."
@@ -110,9 +119,12 @@ proc generate_design {clk_speed spi_clk_ratio jobs} {
 
     # Generate the block design wrapper
     puts "Generating block design wrapper..."
+    # Set synthesis strategy to Global
+    set_property synth_checkpoint_mode None [get_files $bd_project_path/$bd_project_name.srcs/sources_1/bd/block_design/$bd_name.bd]
     make_wrapper -files [get_files $bd_project_path/$bd_project_name.srcs/sources_1/bd/block_design/$bd_name.bd] -top
     add_files $bd_project_path/$bd_project_name.gen/sources_1/bd/block_design/hdl/$bd_name_wrapper.v
     set_property top $bd_name_wrapper [current_fileset]
+
 
     # Launch synthesis
     puts "Launching synthesis..."
