@@ -166,24 +166,21 @@ architecture rtl of czt_spi_core_2det is
         );
     end component;
 
-    component spi_slave_tx_sync is
-        generic (
-           packet_length : INTEGER := 32
-        );
+    component spi_slave is
         port (
-           master_clk      : in  STD_LOGIC;
-           slave_clk       : in  STD_LOGIC;
-           reset           : in  STD_LOGIC;                                       
-           miso            : out STD_LOGIC;
-           mosi            : in  STD_LOGIC;	                                        
-           sclk            : in  STD_LOGIC;
-           ss              : in  STD_LOGIC;
-           data_in_v       : in  STD_LOGIC;
-           data_in         : in  STD_LOGIC_VECTOR(31 downto 0);
-           data_out        : out STD_LOGIC_VECTOR(31 downto 0);
-           data_out_v      : out STD_LOGIC;
-           data_in_ready   : out STD_LOGIC;
-           data_out_ready  : in  STD_LOGIC
+           clk        : in  STD_LOGIC;
+           reset      : in  STD_LOGIC;                                       
+           miso       : out STD_LOGIC;
+           miso_en    : out STD_LOGIC;
+           mosi       : in  STD_LOGIC;	                                        
+           sclk       : in  STD_LOGIC;
+           ss         : in  STD_LOGIC;
+           data_in_v  : in  STD_LOGIC;
+           data_in    : in  STD_LOGIC_VECTOR(31 downto 0);
+           data_out   : out STD_LOGIC_VECTOR(31 downto 0);
+           data_out_v : out STD_LOGIC;
+           data_in_ready   : out STD_LOGIC
+           --oversampling_clk : in STD_LOGIC
         );
         end component;
     
@@ -355,11 +352,10 @@ architecture rtl of czt_spi_core_2det is
                                             data_out => tx_pack_out,
                                             out_ready => tx_ready);
 
-    spi_slave_1: spi_slave_tx_sync port map  (master_clk => spi_sck,
-                                      slave_clk => sys_tick,
+    spi_slave_1: spi_slave port map  (clk => sys_tick,
                                       reset => sys_clr ,
                                       miso => spi_miso_out,
-                                      --miso_en => spi_miso_en,
+                                      miso_en => spi_miso_en,
                                       mosi => spi_mosi,
                                       sclk => spi_sck,
                                       ss   => spi_cs,
@@ -367,8 +363,7 @@ architecture rtl of czt_spi_core_2det is
                                       data_in   => tx_pack_out,
                                       data_out  => in_comm_fifo,
                                       data_out_v => wr_en_comm_fifo_raw,
-                                      data_in_ready => tx_ready,
-                                      data_out_ready => comm_fifo_ready);
+                                      data_in_ready => tx_ready);
 
     --validator_1: validate_command port map (
       -- packet_in => in_comm_fifo,
@@ -396,7 +391,7 @@ architecture rtl of czt_spi_core_2det is
     wr_en_comm_fifo <= wr_en_comm_fifo_raw; --and valid_packet;
 
     
-    spi_miso <= spi_miso_out;-- when spi_miso_en = '1' else 'Z';
+    spi_miso <= spi_miso_out when spi_miso_en = '1' else 'Z';
     --evrm_status_0 <= evrm_0;
     --evrm_status_1 <= evrm_1;
     end rtl;

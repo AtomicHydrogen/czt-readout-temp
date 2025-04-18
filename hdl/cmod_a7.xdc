@@ -149,5 +149,5 @@ set_clock_groups -asynchronous -group [get_clocks spi_sck] -group [get_clocks cl
 set_false_path -from [get_clocks spi_sck] -to [get_clocks clk_out1_block_design_clk_wiz_0_0]
 set_false_path -from [get_clocks clk_out1_block_design_clk_wiz_0_0] -to [get_clocks spi_sck]
 
-create_generated_clock -name sck_czt_0 -source [get_pins block_design_i/clk_wiz_0/clk_out1] -divide_by 2 [get_pins block_design_i/czt_spi_core_0/U0/czt_spi_controller_0/spi_clk_reg/Q] 
-create_generated_clock -name sck_czt_1 -source [get_pins block_design_i/clk_wiz_0/clk_out1] -divide_by 2 [get_pins block_design_i/czt_spi_core_0/U0/czt_spi_controller_1/spi_clk_reg/Q] 
+create_generated_clock -name sck_czt_0 -source [get_pins block_design_i/clk_wiz_0/clk_out1] -divide_by 6 [get_pins block_design_i/czt_spi_core_0/U0/czt_spi_controller_0/spi_clk_reg/Q] 
+create_generated_clock -name sck_czt_1 -source [get_pins block_design_i/clk_wiz_0/clk_out1] -divide_by 6 [get_pins block_design_i/czt_spi_core_0/U0/czt_spi_controller_1/spi_clk_reg/Q] 
